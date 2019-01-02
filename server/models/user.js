@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const SALT_I = 10;
+const jwt = require('jsonwebtoken');
+require("dotenv").config();
 
 const userSchema = mongoose.Schema({
   email:{
@@ -58,6 +60,30 @@ userSchema.pre("save", function(next){
     })
   })
 })
+//method to compare password
+userSchema.methods.comparePassword = function(candidatePassword, cb){
+  bcrypt.compare(candidatePassword, this.password, (err, isMatch)=>{
+    if(err) return cb(err)
+    cb(null, isMatch);//null for err
+  })
+}
+
+//mw method to generate a JWT token
+userSchema.methods.generateToken = function(cb){
+  let user= this;
+  // const payload = { 
+  //   _id: user._id.toHexString(), 
+  //   firstName: user.firstName,
+  //   lastName: user.lastName
+  // }; //creates JWT payload
+  let token = jwt.sign(user._id.toHexString(), process.env.JWT_SECRET_KEY)
+  //save token to user models token field
+  user.token = token;
+  user.save(function(err, user){
+    if(err) return cb(err);
+    cb(null, user);//null for err, and retrn user
+  })
+}
 
 const User = mongoose.model("User", userSchema);
 
