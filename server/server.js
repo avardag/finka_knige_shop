@@ -3,6 +3,8 @@ const express = require('express');
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
+//MWare import
+// const auth = require("./middleware/auth");
 
 const app = express();
 

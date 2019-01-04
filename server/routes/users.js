@@ -1,8 +1,28 @@
 const express = require('express');
 const router = express.Router();
+//MWare import
+const auth = require("../middleware/auth");
 
 //model imports
 const User = require("../models/user");
+
+/**
+ * authorization route
+ * /api/users/auth
+ * GET
+ */
+router.get("/auth", auth, (req, res)=>{
+  res.status(200).json({
+    isAdmin: req.user.role === 0 ? false : true,
+    isAuth: true,
+    email: req.user.email,
+    firstName: req.user.firstName,
+    lastName: req.user.lastName,
+    role: req.user.role,
+    cart: req.user.cart,
+    history: req.user.history
+  })
+})
 
 /**
  * /api/users/register
@@ -16,11 +36,11 @@ router.post("/register", (req, res)=>{
     if(err) return res.json({success: false, err})
     //no error, proceed
     res.status(200).json({
-      success: true,
-      userData: doc
+      success: true
     })
   })
 })
+
 /**
  * /api/users/login
  * POST
