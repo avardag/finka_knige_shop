@@ -65,4 +65,29 @@ router.get("/articles/id", (req, res)=>{
 
 })
 
+/**
+ * gets products from db sorted by sold or arrival date
+ * /api/products/articles?sortBy=sold&order=desc&limit=4
+ * /api/products/articles?sortBy=createdAt&order=desc&limit=4
+ * GET
+ * @return array of product objects
+ */
+router.get("/articles", (req, res)=>{
+  let order = req.query.order ? req.query.order : 'asc';
+  let sortBy = req.query.sortBy ? req.query.sortBy : '_id';
+  let limit = req.query.limit ? parseInt(req.query.limit) : 100; 
+  //query string are strings, need to pass number to mogoose queries
+
+  Product
+    .find()
+    .populate("brand")
+    .populate("style")
+    .sort([[sortBy, order]])
+    .limit(limit)
+    .exec((err, articles)=>{
+      if(err) return res.status(400).send(err)
+      return res.status(200).send(articles);
+    }) 
+})
+
 module.exports = router;
