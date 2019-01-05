@@ -5,7 +5,7 @@ const brandSchema = mongoose.Schema({
     type: String,
     required: true,
     unique: 1,
-    maxLength: 64
+    maxlength: 64
   }
 })
 
