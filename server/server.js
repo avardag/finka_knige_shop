@@ -23,6 +23,8 @@ app.use(cookieParser())
 
 //ROUTES
 app.use("/api/users", require("./routes/users"))
+app.use("/api/product", require("./routes/brands"));
+
 // server
 const port = process.env.PORT || 3000;
 app.listen(port, ()=>console.log(`Server running on port ${port}`));
