@@ -28,5 +28,5 @@ app.use("/api/product", require("./routes/brands"));
 app.use("/api/products", require("./routes/products"));
 
 // server
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3002;
 app.listen(port, ()=>console.log(`Server running on port ${port}`));
