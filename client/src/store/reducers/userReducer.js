@@ -1,7 +1,9 @@
+import { LOGIN_USER } from '../actions/types';
+
 export default function(state={}, action){
   switch (action.type) {
-    case "TEST":
-      return state;
+    case LOGIN_USER:
+      return {...state, loginSuccess: action.payload}
   
     default:
       return state;
