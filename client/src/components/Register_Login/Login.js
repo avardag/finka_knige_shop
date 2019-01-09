@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import FormField from "../utils/forms/FormField";
+import { update, generateData, isFormValid } from '../utils/forms/formActions';
 
 class Login extends Component {
 
-  state={
+  state = {
     formError: false,
     formSuccess: '',
-    formData:{
+    formData: {
       email: {
         element: "input",
         value: '',
-        config:{
+        config: {
           name: "email",
           type: "email",
           placeholder: 'Enter your email'
@@ -20,14 +21,14 @@ class Login extends Component {
           required: true,
           email: true
         },
-        valid:false,
+        valid: false,
         touched: false,
         validationMessage: ''
       },
       password: {
         element: "input",
         value: '',
-        config:{
+        config: {
           name: "password",
           type: "password",
           placeholder: 'Enter your password'
@@ -35,35 +36,58 @@ class Login extends Component {
         validation: {
           required: true
         },
-        valid:false,
+        valid: false,
         touched: false,
         validationMessage: ''
       },
     }
   }
 
-  updateForm = ()=>{
-
+  updateForm = (element) => {
+    //element===HTML element
+    const newFormdata = update(element, this.state.formData, 'login');
+    this.setState({
+      formError: false,
+      formData: newFormdata
+    })
   }
 
-  submitForm = (e) =>{
+  submitForm = (event) => {
+    event.preventDefault();
+    let dataToSubmit = generateData(this.state.formData, "login")
+    let formIsValid = isFormValid(this.state.formData, "login")
+    
+    if (formIsValid) {
+      console.log('dataToSubmit', dataToSubmit);
+    } else {
+      this.setState({ formError: true })
+    }
+    
 
   }
   render() {
     return (
       <div>
         <div className="signin_wrapper">
-          <form onSubmit={(e)=> this.submitForm(e)}>
+          <form onSubmit={(e) => this.submitForm(e)}>
             <FormField
               id={'email'}
-              formData = {this.state.formData.email}
-              change={(element)=> this.updateForm(element)}
+              formData={this.state.formData.email}
+              change={(element) => this.updateForm(element)}
             />
             <FormField
               id={'password'}
-              formData = {this.state.formData.password}
-              change={(element)=> this.updateForm(element)}
+              formData={this.state.formData.password}
+              change={(element) => this.updateForm(element)}
             />
+            {this.state.formError ?
+              <div className="error_label">
+                Please check your input data
+              </div>
+              : null}
+            <button onSubmit={(e) => this.submitForm(e)} >
+              Log in
+            </button>
           </form>
         </div>
       </div>

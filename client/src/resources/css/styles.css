@@ -114,6 +114,7 @@ button {
     margin-top: 10px;
     font-family: 'Oswald', sans-serif;
     font-size: 16px;
+    color: #404040;
 }
 
 .error_label {
