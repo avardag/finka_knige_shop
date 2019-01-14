@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { Link, withRouter } from 'react-router-dom';
+import { logoutUser } from '../../../store/actions/userActions';
 class Header extends Component {
   //links. can be saved in const links too
   state = {
@@ -39,10 +40,18 @@ class Header extends Component {
       },
     ],
   }
+  logoutHandler = () => {
+    this.props.dispatch(logoutUser())
+      .then(response => { //response is {type:LOGOUT_USER, payload: {success:true}}
+        if (response.payload.success) { //will be sent by server
+          this.props.history.push("/");
+        }
+      })
+  }
   //function to render links
   renderLink = (item, i) => {
     const user = this.props.user.userData;
-    if (item.name === "My cart") {
+    if (item.name === "My cart") { //My Cart links has a span attached to it
       return (
         <div className="cart_link" key={i}>
           <span>{user.cart ? user.cart.length : 0}</span>
@@ -51,7 +60,11 @@ class Header extends Component {
           </Link>
         </div>
       )
-    } else {
+    } else if (item.name === "Log Out") { //logout is not a RRouter Link(which need "to" prop)
+      return (<div onClick={this.logoutHandler} className="log_out_link" key={i}>
+        {item.name}
+      </div>)
+    } else { //all other links
       return (<Link to={item.linkTo} key={i}>
         {item.name}
       </Link>)
