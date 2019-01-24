@@ -23,8 +23,8 @@ app.use(cookieParser())
 
 //ROUTES
 app.use("/api/users", require("./routes/users"))
-app.use("/api/product", require("./routes/styles"));
-app.use("/api/product", require("./routes/brands"));
+app.use("/api/products", require("./routes/styles"));
+app.use("/api/products", require("./routes/brands"));
 app.use("/api/products", require("./routes/products"));
 
 // server
