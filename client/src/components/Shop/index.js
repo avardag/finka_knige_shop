@@ -1,19 +1,20 @@
 import React, { Component } from 'react';
-import { bladeLength } from '../utils/forms/fixed_categories';
+import { bladeLength, price } from '../utils/forms/fixed_categories';
 import PageTop from '../utils/PageTop';
 
 import { connect } from 'react-redux';
 import { getBrands, getStyles } from '../../store/actions/productsActions';
 
 import CollapseCheckbox from '../utils/CollapseCheckbox';
+import CollapseRadio from '../utils/CollapseRadio';
 
 
 class Shop extends Component {
-  state={
+  state = {
     grid: '',
     limit: 6,
     skip: 0,
-    filters:{
+    filters: {
       brand: [],
       bladeLength: [],
       style: [],
@@ -24,52 +25,79 @@ class Shop extends Component {
     this.props.dispatch(getBrands())
     this.props.dispatch(getStyles())
   }
-  //handles filters set by checkboxes
-  handleFilters=(filters, category)=>{
-    const newFilters = {...this.state.filters} //copy filters from state
-    newFilters[category] = filters
+  //takes in filters(value of radio button) and category
+  //returns array of limits 2b set in state, 2b used in query to server
+  handlePriceAndBladeLength = (value, category) => {
+    const data = category === "price" ? price : bladeLength //imported array of price/bladeLength 
+    let arrayOfLimits = []; 
+    for (let key in data) {
+      if (data[key]._id === parseInt(value, 10)) {
+        arrayOfLimits = data[key].array
+      }
+    }
+    return arrayOfLimits; //returns eg. [20, 30], [0, 20]
 
-    this.setState({filters: newFilters})    
+  }
+  //handles filters set by checkboxes
+  handleFilters = (filtersValues, category) => {
+    const newFilters = { ...this.state.filters } //copy filters from state
+    newFilters[category] = filtersValues
+    //price&bladeLength in state should be arrays of limits
+    //from upper component we get value in stings as 0, 1, 2, 3 which corresponds
+    //to array of limits in fixed_categories
+    if (category === 'price' || category === 'bladeLength') {
+      let valuesArray = this.handlePriceAndBladeLength(filtersValues, category)
+      newFilters[category] = valuesArray
+    }
+
+    this.setState({ filters: newFilters })
   }
 
   render() {
-    const {products} = this.props;
+    console.log(this.state.filters)
+    const { products } = this.props;
     return (
 
       <div className="page_wrapper">
-        <PageTop title="Browse Products"/>
-         <div className="container">
-          <div className="shop_wrapper">   
+        <PageTop title="Browse Products" />
+        <div className="container">
+          <div className="shop_wrapper">
             <div className="left">
               <CollapseCheckbox
                 initState={true}
                 title="Brands"
                 list={products.brands}
-                handleFilters={(filters)=>this.handleFilters(filters, "brand")}
+                handleFilters={(filters) => this.handleFilters(filters, "brand")}
               />
-              <CollapseCheckbox
+              <CollapseRadio
                 initState={false}
                 title="Blade Length"
                 list={bladeLength}
-                handleFilters={(filters)=>this.handleFilters(filters, "bladeLength")}
+                handleFilters={(filters) => this.handleFilters(filters, "bladeLength")}
               />
               <CollapseCheckbox
                 initState={true}
                 title="Styles"
                 list={products.styles}
-                handleFilters={(filters)=>this.handleFilters(filters, "style")}
+                handleFilters={(filters) => this.handleFilters(filters, "style")}
+              />
+              <CollapseRadio
+                initState={true}
+                title="Price"
+                list={price}
+                handleFilters={(filters) => this.handleFilters(filters, "price")}
               />
             </div>
             <div className="right">
               RIGHT
             </div>
           </div>
-         </div>
+        </div>
       </div>
     );
   }
 }
-const mapStateToProps = (state) =>({
+const mapStateToProps = (state) => ({
   products: state.products
 })
 export default connect(mapStateToProps)(Shop);
