@@ -34,7 +34,7 @@ class Shop extends Component {
   //returns array of limits 2b set in state, 2b used in query to server
   handlePriceAndBladeLength = (value, category) => {
     const data = category === "price" ? price : bladeLength //imported array of price/bladeLength 
-    let arrayOfLimits = []; 
+    let arrayOfLimits = [];
 
     for (let key in data) {
       if (data[key]._id === parseInt(value, 10)) {
@@ -61,16 +61,27 @@ class Shop extends Component {
     this.setState({ filters: newFilters })
   }
   //rerender results after applying filters, i.e. changing radio/checkbox
-  showFilteredResults = (filters) =>{
+  showFilteredResults = (filters) => {
     this.props.dispatch(getProductsToShop(
       0, //skip arg
       this.state.limit,
       filters
-    )).then(()=>{
-      this.setState({skip: 0})
+    )).then(() => {
+      this.setState({ skip: 0 })
     })
   }
 
+  loadMoreCards = () => {
+    let newSkipValue = this.state.skip + this.state.limit;
+    this.props.dispatch(getProductsToShop(
+      newSkipValue, //skip arg
+      this.state.limit,
+      this.state.filters,
+      this.props.products.toShop //previuoSstate arg, to merge old state&new state when loading more
+    )).then(() => { //reassign skip value in state
+      this.setState({ skip: newSkipValue })
+    })
+  }
   render() {
     const { products } = this.props;
     return (
@@ -117,7 +128,7 @@ class Shop extends Component {
                   limit={this.state.limit}
                   size={products.toShopSize}
                   products={products.toShop}
-                  loadMore={()=> console.log("load more")}
+                  loadMore={() => this.loadMoreCards()}
                 />
               </div>
             </div>
