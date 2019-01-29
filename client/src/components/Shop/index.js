@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
 import { bladeLength, price } from '../utils/forms/fixed_categories';
 import PageTop from '../utils/PageTop';
-
+//redux imports
 import { connect } from 'react-redux';
 import { getBrands, getStyles, getProductsToShop } from '../../store/actions/productsActions';
-
+//components import
 import CollapseCheckbox from '../utils/CollapseCheckbox';
 import CollapseRadio from '../utils/CollapseRadio';
+
 import LoadMoreCards from './LoadMoreCards';
+//fontawsome icons import 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars, faTh } from '@fortawesome/free-solid-svg-icons'
+
 
 class Shop extends Component {
   state = {
@@ -82,6 +87,12 @@ class Shop extends Component {
       this.setState({ skip: newSkipValue })
     })
   }
+  //changes list/grid layout of shop cards
+  handleGrid = () => {
+    this.setState({
+      grid: !this.state.grid ? 'grid_bars' : ""
+    })
+  }
   render() {
     const { products } = this.props;
     return (
@@ -119,7 +130,18 @@ class Shop extends Component {
             <div className="right">
               <div className="shop_options">
                 <div className="shop_grids clear">
-                  grids
+                  <div
+                    className={`grid_btn ${this.state.grid ? "" : "active"}`}
+                    onClick={() => this.handleGrid()}
+                  >
+                    <FontAwesomeIcon icon={faTh} />
+                  </div>
+                  <div
+                    className={`grid_btn ${!this.state.grid ? "" : "active"}`}
+                    onClick={() => this.handleGrid()}
+                  >
+                    <FontAwesomeIcon icon={faBars} />
+                  </div>
                 </div>
               </div>
               <div>

@@ -25,7 +25,9 @@ class Card extends Component {
           </div>
           {
             this.props.grid ?
-              <div className="description"> TODO: Description</div>
+              <div className="description"> 
+                <p>{knife.description}</p>
+              </div>
               : null
           }
           <div className="actions">
