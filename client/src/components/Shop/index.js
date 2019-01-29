@@ -7,7 +7,7 @@ import { getBrands, getStyles, getProductsToShop } from '../../store/actions/pro
 
 import CollapseCheckbox from '../utils/CollapseCheckbox';
 import CollapseRadio from '../utils/CollapseRadio';
-
+import LoadMoreCards from './LoadMoreCards';
 
 class Shop extends Component {
   state = {
@@ -35,6 +35,7 @@ class Shop extends Component {
   handlePriceAndBladeLength = (value, category) => {
     const data = category === "price" ? price : bladeLength //imported array of price/bladeLength 
     let arrayOfLimits = []; 
+
     for (let key in data) {
       if (data[key]._id === parseInt(value, 10)) {
         arrayOfLimits = data[key].array
@@ -105,7 +106,20 @@ class Shop extends Component {
               />
             </div>
             <div className="right">
-              RIGHT
+              <div className="shop_options">
+                <div className="shop_grids clear">
+                  grids
+                </div>
+              </div>
+              <div>
+                <LoadMoreCards
+                  grid={this.state.grid}
+                  limit={this.state.limit}
+                  size={products.toShopSize}
+                  products={products.toShop}
+                  loadMore={()=> console.log("load more")}
+                />
+              </div>
             </div>
           </div>
         </div>
