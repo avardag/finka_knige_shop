@@ -1,5 +1,8 @@
 import axios from "axios";
-import { GET_PRODUCTS_BY_ARRIVAL, GET_PRODUCTS_BY_SELL, GET_BRANDS, GET_STYLES } from './types';
+import {  GET_PRODUCTS_BY_ARRIVAL, 
+          GET_PRODUCTS_BY_SELL, 
+          GET_BRANDS, GET_STYLES,
+          GET_PRODUCTS_TO_SHOP } from './types';
 import { PRODUCTS_ROUTES } from '../../components/utils/misc';
 
 // /api/products/articles?sortBy=createdAt&order=desc&limit=4
@@ -36,6 +39,23 @@ export function getStyles() {
     .then(response => response.data)
   return {
     type: GET_STYLES,
+    payload: request
+  }
+}
+// POST   /api/products/shop
+//sends JSOn data as a post request to server
+export function getProductsToShop(skip, limit, filters=[], previousState=[]) {
+  const dataToPost = { limit, skip, filters };
+
+  const request = axios.post(`${PRODUCTS_ROUTES}/shop`, dataToPost)
+    .then(response => {
+      return {
+        size: response.data.size, //how many articles
+        articles: response.data.articles,
+      }
+    })
+  return {
+    type: GET_PRODUCTS_TO_SHOP,
     payload: request
   }
 }

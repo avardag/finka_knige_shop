@@ -1,4 +1,7 @@
-import { GET_PRODUCTS_BY_ARRIVAL, GET_PRODUCTS_BY_SELL, GET_BRANDS, GET_STYLES } from '../actions/types';
+import { GET_PRODUCTS_BY_ARRIVAL, 
+          GET_PRODUCTS_BY_SELL, 
+          GET_BRANDS, GET_STYLES,
+          GET_PRODUCTS_TO_SHOP } from '../actions/types';
 
 export default function(state={}, action){
   switch (action.type) {
@@ -12,6 +15,9 @@ export default function(state={}, action){
   
     case GET_STYLES:
       return {...state, styles: action.payload}
+  
+    case GET_PRODUCTS_TO_SHOP:
+      return {...state, toShop: action.payload.articles, toShopSize: action.payload.size}
   
     default:
       return state;

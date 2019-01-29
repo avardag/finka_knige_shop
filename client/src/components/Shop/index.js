@@ -3,7 +3,7 @@ import { bladeLength, price } from '../utils/forms/fixed_categories';
 import PageTop from '../utils/PageTop';
 
 import { connect } from 'react-redux';
-import { getBrands, getStyles } from '../../store/actions/productsActions';
+import { getBrands, getStyles, getProductsToShop } from '../../store/actions/productsActions';
 
 import CollapseCheckbox from '../utils/CollapseCheckbox';
 import CollapseRadio from '../utils/CollapseRadio';
@@ -24,6 +24,11 @@ class Shop extends Component {
   componentDidMount() {
     this.props.dispatch(getBrands())
     this.props.dispatch(getStyles())
+    this.props.dispatch(getProductsToShop(
+      this.state.skip,
+      this.state.limit,
+      this.state.filters
+    ))
   }
   //takes in filters(value of radio button) and category
   //returns array of limits 2b set in state, 2b used in query to server
@@ -49,12 +54,23 @@ class Shop extends Component {
       let valuesArray = this.handlePriceAndBladeLength(filtersValues, category)
       newFilters[category] = valuesArray
     }
-
+    //render filtered results
+    this.showFilteredResults(newFilters);
+    //set newFilters to state
     this.setState({ filters: newFilters })
+  }
+  //rerender results after applying filters, i.e. changing radio/checkbox
+  showFilteredResults = (filters) =>{
+    this.props.dispatch(getProductsToShop(
+      0, //skip arg
+      this.state.limit,
+      filters
+    )).then(()=>{
+      this.setState({skip: 0})
+    })
   }
 
   render() {
-    console.log(this.state.filters)
     const { products } = this.props;
     return (
 

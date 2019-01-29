@@ -90,4 +90,54 @@ router.get("/articles", (req, res)=>{
     }) 
 })
 
+/**
+ * gets products from db to Shop component
+ * /api/products/shop
+ * POST
+ * @return array of product objects
+ */
+router.post("/shop", (req, res)=>{
+  let order = req.body.order ? req.body.order : 'desc';
+  let sortBy = req.body.sortBy ? req.body.sortBy : '_id';
+  let limit = req.body.limit ? parseInt(req.body.limit) : 100; 
+  let skip = parseInt(req.body.skip);
+  //query string are strings, need to pass number to mogoose queries
+  // //req.body.filters key will be : 
+  //    {
+  //      bladeLength: [0, 70],
+  //      brand: ["5c30524aad9121270a32a2cc","5c305546395b9c288a92771c","5c3057e5e4b50929642280cf"],
+  //      price:[30, 49],
+  //      style:["5c30524aad9121270a32a2cc","5c305546395b9c288a92771c"]
+  //    }
+  let findArgs = {}; //arguments to Mongo find query
+
+  for (const key in req.body.filters) {
+    if (req.body.filters[key].length > 0) {
+      if(key === 'price' || key==='bladeLength'){ 
+        findArgs[key] = {
+          $gte: req.body.filters[key][0],
+          $lte: req.body.filters[key][1]
+        }
+      }else{
+        findArgs[key] = req.body.filters[key]
+      } 
+    }
+  }
+  Product
+    .find(findArgs)
+    .populate("brand")
+    .populate("style")
+    .sort([[sortBy, order]])
+    .skip(skip)
+    .limit(limit)
+    .exec((err, articles)=>{
+      if(err) return res.status(400).send(err)
+      return res.status(200).json({
+        size: articles.length,
+        articles
+      });
+    }) 
+
+  res.status(200)
+})
 module.exports = router;
