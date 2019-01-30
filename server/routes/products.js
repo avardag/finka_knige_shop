@@ -123,6 +123,9 @@ router.post("/shop", (req, res)=>{
       } 
     }
   }
+  //dont send anything wich is not to be published in db
+  findArgs["publish"] = true;
+  
   Product
     .find(findArgs)
     .populate("brand")
