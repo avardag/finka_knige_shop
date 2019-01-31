@@ -69,3 +69,24 @@ export const isFormValid = (formData, formName) => {
   return formIsValid;
 
 }
+
+/**
+ * @param formData -> values of form in state
+ * @param dataArray -> array of objs(with _id&name) returned from server
+ * @param field -> key in formData, which need to be updated with new data
+ * @returns newFormdata  with options field filled with new data
+ */
+export const populateOptionFields = (formData, dataArray = [], field) => {
+  const newArray = [];
+  const newFormData = { ...formData }
+
+  dataArray.forEach(item => {
+    newArray.push({
+      key: item._id,
+      value: item.name
+    })
+  })
+
+  newFormData[field].config.options = newArray;
+  return newFormData;
+}

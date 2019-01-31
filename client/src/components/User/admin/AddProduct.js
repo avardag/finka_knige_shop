@@ -3,7 +3,7 @@ import UserLayout from '../../hocs/UserLayout';
 
 //form subcomponenets
 import FormField from '../../utils/forms/FormField';
-import { generateData, update, isFormValid } from '../../utils/forms/formActions';
+import { generateData, update, isFormValid, populateOptionFields } from '../../utils/forms/formActions';
 //redux imports 
 import { connect } from 'react-redux'
 import { getBrands, getStyles } from '../../../store/actions/productsActions';
@@ -174,6 +174,23 @@ class AddProduct extends Component {
     }
   }
 
+  componentDidMount() {
+    const {formData} = this.state;
+    this.props.dispatch(getBrands())
+      .then(response=> {
+        const newFormData = populateOptionFields(formData, this.props.products.brands, "brand")
+        this.updateFields(newFormData);
+      })
+    this.props.dispatch(getStyles())
+      .then(response=> {
+        const newFormData = populateOptionFields(formData, this.props.products.styles, "style")
+        this.updateFields(newFormData);
+      })
+  }
+  //updates state with new options of brands or styles from server
+  updateFields = (newFormData)=>{
+    this.setState({formData: newFormData})
+  }
   updateForm = (element) => {
     // const newFormdata = update(element, this.state.formData, 'register');
     // this.setState({
