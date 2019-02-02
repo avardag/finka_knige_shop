@@ -3,10 +3,10 @@ import UserLayout from '../../hocs/UserLayout';
 
 //form subcomponenets
 import FormField from '../../utils/forms/FormField';
-import { generateData, update, isFormValid, populateOptionFields } from '../../utils/forms/formActions';
+import { generateData, update, isFormValid, populateOptionFields, resetFields } from '../../utils/forms/formActions';
 //redux imports 
 import { connect } from 'react-redux'
-import { getBrands, getStyles } from '../../../store/actions/productsActions';
+import { getBrands, getStyles, addProduct, clearAddedProduct } from '../../../store/actions/productsActions';
 
 
 class AddProduct extends Component {
@@ -152,6 +152,23 @@ class AddProduct extends Component {
         validationMessage: '',
         showLabel: true
       },
+      weight: {
+        element: "input",
+        value: '',
+        config: {
+          label: 'weight of knife',
+          name: "weight",
+          type: "number",
+          placeholder: 'Enter knife\'s weight '
+        },
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false,
+        validationMessage: '',
+        showLabel: true
+      },
       publish: {
         element: "select",
         value: '',
@@ -192,38 +209,42 @@ class AddProduct extends Component {
     this.setState({formData: newFormData})
   }
   updateForm = (element) => {
-    // const newFormdata = update(element, this.state.formData, 'register');
-    // this.setState({
-    //   formError: false,
-    //   formData: newFormdata
-    // })
+    const newFormdata = update(element, this.state.formData, 'products');
+    this.setState({
+      formError: false,
+      formData: newFormdata
+    })
   }
-
+  //reselt all fields in state
+  resetFieldsHandler = ()=>{
+    const newFormData = resetFields(this.state.formData)
+    this.setState({
+      formData: newFormData,
+      formSuccess: true})
+    //remove success message after 2 sec && clear the product from redux state
+    setTimeout(()=>{
+      this.setState({formSuccess: false}, ()=>this.props.dispatch(clearAddedProduct()))
+    }, 2000)
+  } 
+  //submit form with all info
   submitForm = (event) => {
     event.preventDefault();
-    // let dataToSubmit = generateData(this.state.formData, "register")
-    // let formIsValid = isFormValid(this.state.formData, "register")
+    let dataToSubmit = generateData(this.state.formData, "products")
+    let formIsValid = isFormValid(this.state.formData, "products")
 
-    // if (formIsValid) {
-    //   this.props.dispatch(registerUser(dataToSubmit))
-    //     .then(response => {
-    //       if (response.payload.success) {
-    //         this.setState({
-    //           formError: false,
-    //           formSuccess: true
-    //         })
-    //         setTimeout(() => {
-    //           this.props.history.push("/register-login")
-    //         }, 2500)
-    //       } else {
-    //         this.setState({ formError: true })
-    //       }
-    //     })
-    //     .catch(err => this.setState({ formError: true }))
-
-    // } else {
-    //   this.setState({ formError: true })
-    // }
+    if (formIsValid) {
+      //submit form to db with Redux action
+      this.props.dispatch(addProduct(dataToSubmit))
+        .then(()=>{
+          if (this.props.products.addedProduct.success) {
+            this.resetFieldsHandler();
+          } else {
+            this.setState({formError: true})
+          }
+        })
+    } else {
+      this.setState({ formError: true })
+    }
   }
 
   render() {
@@ -261,6 +282,11 @@ class AddProduct extends Component {
             <FormField
               id={'bladeLength'}
               formData={this.state.formData.bladeLength}
+              change={(element) => this.updateForm(element)}
+            />
+            <FormField
+              id={'weight'}
+              formData={this.state.formData.weight}
               change={(element) => this.updateForm(element)}
             />
             <FormField

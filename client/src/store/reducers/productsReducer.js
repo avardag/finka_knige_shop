@@ -1,7 +1,10 @@
 import { GET_PRODUCTS_BY_ARRIVAL, 
           GET_PRODUCTS_BY_SELL, 
           GET_BRANDS, GET_STYLES,
-          GET_PRODUCTS_TO_SHOP } from '../actions/types';
+          GET_PRODUCTS_TO_SHOP,
+          ADD_PRODUCT,
+          CLEAR_ADDED_PRODUCT
+        } from '../actions/types';
 
 export default function(state={}, action){
   switch (action.type) {
@@ -18,6 +21,12 @@ export default function(state={}, action){
   
     case GET_PRODUCTS_TO_SHOP:
       return {...state, toShop: action.payload.articles, toShopSize: action.payload.size}
+  
+    case ADD_PRODUCT:
+      return {...state, addedProduct: action.payload}
+  
+    case CLEAR_ADDED_PRODUCT:
+      return {...state, addedProduct: action.payload}
   
     default:
       return state;

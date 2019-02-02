@@ -2,7 +2,10 @@ import axios from "axios";
 import {  GET_PRODUCTS_BY_ARRIVAL, 
           GET_PRODUCTS_BY_SELL, 
           GET_BRANDS, GET_STYLES,
-          GET_PRODUCTS_TO_SHOP } from './types';
+          GET_PRODUCTS_TO_SHOP,
+          ADD_PRODUCT,
+          CLEAR_ADDED_PRODUCT
+        } from './types';
 import { PRODUCTS_ROUTES } from '../../components/utils/misc';
 
 // /api/products/articles?sortBy=createdAt&order=desc&limit=4
@@ -61,5 +64,24 @@ export function getProductsToShop(skip, limit, filters=[], previousState=[]) {
   return {
     type: GET_PRODUCTS_TO_SHOP,
     payload: request
+  }
+}
+
+//Add new product to db
+// POST   /api/products/article
+export function addProduct(dataToSubmit) {
+
+  const request = axios.post(`${PRODUCTS_ROUTES}/article`, dataToSubmit)
+    .then(response => response.data)
+  return {
+    type: ADD_PRODUCT,
+    payload: request
+  }
+}
+//clears added product from redux state
+export function clearAddedProduct(dataToSubmit) {
+  return {
+    type: CLEAR_ADDED_PRODUCT,
+    payload: {}
   }
 }
