@@ -4,6 +4,7 @@ import UserLayout from '../../hocs/UserLayout';
 //form subcomponenets
 import FormField from '../../utils/forms/FormField';
 import { generateData, update, isFormValid, populateOptionFields, resetFields } from '../../utils/forms/formActions';
+import FileUpoad from '../../utils/forms/FileUpoad';
 //redux imports 
 import { connect } from 'react-redux'
 import { getBrands, getStyles, addProduct, clearAddedProduct } from '../../../store/actions/productsActions';
@@ -188,6 +189,16 @@ class AddProduct extends Component {
         validationMessage: '',
         showLabel: true
       },
+      images: {
+        value: [],
+        validation: {
+          required: true
+        },
+        valid: true,
+        touched: false,
+        validationMessage: '',
+        showLabel: false
+      },
     }
   }
 
@@ -247,12 +258,20 @@ class AddProduct extends Component {
     }
   }
 
+  imagesHandler = ()=>{
+
+  }
+
   render() {
     return (
       <UserLayout>
         <div>
           <h1>Add Product</h1>
           <form onSubmit={(e) => this.submitForm(e)}>
+            <FileUpoad
+              handleImages={(images)=>this.imagesHandler(images)}
+              reset={this.state.formSuccess}
+            />
             <FormField
               id={'name'}
               formData={this.state.formData.name}
