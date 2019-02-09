@@ -789,7 +789,7 @@ footer .business_nfo .nfo {
     width: 280px;
 }
 
-.user_container  .user_right {
+.user_container  .user_right_nav {
     flex-grow: 1;
     padding: 0 0 0 29px;
 }
@@ -895,7 +895,7 @@ footer .business_nfo .nfo {
     box-sizing: border-box;
 }
 
-.dropzone_box  .wrap {
+.dropzone_box .wrap {
     background: #eaeaea;
     height: 100%;
     text-align: center;

@@ -1,7 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const cloudinary = require("cloudinary");
+const formidable = require('formidable'); //for managing file uploads
+
 //MWare import
 const auth = require("../middleware/auth");
+const adminAuth = require("../middleware/adminAuth");
 
 //model imports
 const User = require("../models/user");
@@ -80,6 +84,56 @@ router.get("/logout", auth, (req, res)=>{
     
     return res.status(200).send({ success: true })
   })
+})
+
+/**
+ * File upload  route
+ * '/api/users/uploadimage'
+ * POST
+ */
+router.post("/uploadimage", auth, adminAuth, (req, res)=>{
+  var form = new formidable.IncomingForm()
+  //parse the incoming form input by formidable
+  form.parse(req, (err, fields, files) => {
+    if(err) return res.status(400).send(err)
+    //upload file to cloudinary
+    cloudinary.v2.uploader.upload(
+      files.picfile.path, //the file path from tmp folder
+      {
+        public_id: `${Date.now()}`, 
+        resource_type: 'image',
+        },
+      function(error, result) {
+        if(error) return res.status(400).send(error)
+        //send response
+        res.status(200).send({
+          public_id: result.public_id,
+          url: result.url
+        })
+      });
+    
+  })
+  
+})
+/**
+ * remove uploaded image
+ * '/api/users/removeimage?public_id=3985095890'
+ * GET
+ */
+router.get("/removeimage", auth, adminAuth, (req, res)=>{
+  let image_id = req.query.public_id;
+  
+  cloudinary.v2.uploader.destroy(
+    image_id, //file to be deleted
+    function(error, result) {
+      if(error) return res.status(400).send(error)
+      //send response
+      res.status(200).send({
+        success: true
+      })
+    });
+ 
+  
 })
 
 module.exports = router;

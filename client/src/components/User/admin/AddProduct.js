@@ -257,9 +257,15 @@ class AddProduct extends Component {
       this.setState({ formError: true })
     }
   }
-
-  imagesHandler = ()=>{
-
+  //add uploaded images to the state, images array to save in DB
+  imagesHandler = (imagesArray)=>{
+    // copy formData
+    const newFormData = { ...this.state.formData}
+    //set images field to be images uploaded
+    newFormData["images"].value = imagesArray;
+    newFormData["images"].valid = true;
+    //update state with new data
+    this.setState({formData: newFormData})
   }
 
   render() {
