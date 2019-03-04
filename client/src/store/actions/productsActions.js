@@ -2,6 +2,7 @@ import axios from "axios";
 import {  GET_PRODUCTS_BY_ARRIVAL, 
           GET_PRODUCTS_BY_SELL, 
           GET_BRANDS, GET_STYLES,
+          ADD_BRAND, ADD_STYLE,
           GET_PRODUCTS_TO_SHOP,
           ADD_PRODUCT,
           CLEAR_ADDED_PRODUCT
@@ -27,6 +28,8 @@ export function getProductsBySell() {
     payload: request
   }
 }
+
+//CATEGORIES
 // /api/products/brands
 export function getBrands() {
   const request = axios.get(`${PRODUCTS_ROUTES}/brands`)
@@ -45,6 +48,45 @@ export function getStyles() {
     payload: request
   }
 }
+// POST /api/products/brand
+export function addBrand(dataToSubmit, existingBrands) {
+  const request = axios.post(`${PRODUCTS_ROUTES}/brand`, dataToSubmit)
+    .then(response => {
+      // merge new brand (returned from server) with existing brands
+      let brands = [
+        ...existingBrands,
+        response.data.brand
+      ]
+      return {
+        success: response.data.success,
+        brands
+      }
+    })
+  return {
+    type: ADD_BRAND,
+    payload: request
+  }
+}
+// POST /api/products/style
+export function addStyle(dataToSubmit, existingStyles) {
+  const request = axios.post(`${PRODUCTS_ROUTES}/style`, dataToSubmit)
+    .then(response => {
+      // merge new brand (returned from server) with existing brands
+      let styles = [
+        ...existingStyles,
+        response.data.style
+      ]
+      return {
+        success: response.data.success,
+        styles
+      }
+    })
+  return {
+    type: ADD_STYLE,
+    payload: request
+  }
+}
+
 // POST   /api/products/shop
 //sends JSOn data as a post request to server
 export function getProductsToShop(skip, limit, filters=[], previousState=[]) {
