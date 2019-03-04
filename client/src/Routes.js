@@ -11,6 +11,7 @@ import Shop from "./components/Shop";
 import UserDashboard from './components/User/UserDashboard';
 import AddProduct from './components/User/admin/AddProduct';
 import ManageCategories from './components/User/admin/ManageCategories';
+import Product from './components/Product/index';
 
 const Routes = () => {
   return (
@@ -24,6 +25,7 @@ const Routes = () => {
         <Route path="/user/dashboard" exact component={Auth(UserDashboard, true)} />
         <Route path="/admin/add-product" exact component={Auth(AddProduct, true)} />
         <Route path="/admin/manage-categories" exact component={Auth(ManageCategories, true)} />
+        <Route path="/product-detail/:id" exact component={Auth(Product, null)} />
       </Switch>
     </Layout>
   );

@@ -5,7 +5,9 @@ import {  GET_PRODUCTS_BY_ARRIVAL,
           ADD_BRAND, ADD_STYLE,
           GET_PRODUCTS_TO_SHOP,
           ADD_PRODUCT,
-          CLEAR_ADDED_PRODUCT
+          CLEAR_ADDED_PRODUCT,
+          GET_PRODUCT_DETAIL,
+          CLEAR_PRODUCT_DETAIL,
         } from './types';
 import { PRODUCTS_ROUTES } from '../../components/utils/misc';
 
@@ -124,6 +126,26 @@ export function addProduct(dataToSubmit) {
 export function clearAddedProduct(dataToSubmit) {
   return {
     type: CLEAR_ADDED_PRODUCT,
+    payload: {}
+  }
+}
+
+//Get product detail form sigle product
+// GET /api/products/articles/id?id=kfhhihf39080923jd9082,skffn989489msn&type=array
+//  * @return array of product objects
+export function getProductDetail(productId) {
+
+  const request = axios.get(`${PRODUCTS_ROUTES}/articles/id?id=${productId}&type=single`)
+    .then(response => response.data[0])
+  return {
+    type: GET_PRODUCT_DETAIL,
+    payload: request
+  }
+}
+//clears product detail from redux state
+export function clearProductDetail() {
+  return {
+    type: CLEAR_PRODUCT_DETAIL,
     payload: {}
   }
 }
