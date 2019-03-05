@@ -4,6 +4,7 @@ import PageTop from '../utils/PageTop';
 import { connect } from 'react-redux';
 import { getProductDetail, clearProductDetail } from '../../store/actions/productsActions';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import ProductInfo from './ProductInfo';
 
 class Product extends Component {
   componentDidMount() {
@@ -29,6 +30,10 @@ class Product extends Component {
                       Images
                   </div>
                   <div className="right">
+                    <ProductInfo
+                      addToCart = {(id)=>this.addToCartHandler(id)}
+                      prodDetail={this.props.products.productDetail}
+                      />
                   </div>
               </div> )
             : (<div className="main_loader">
