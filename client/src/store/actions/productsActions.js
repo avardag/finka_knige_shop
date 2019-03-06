@@ -137,6 +137,7 @@ export function getProductDetail(productId) {
 
   const request = axios.get(`${PRODUCTS_ROUTES}/articles/id?id=${productId}&type=single`)
     .then(response => response.data[0])
+    .catch(err => '') //if product not found(instead of 404)
   return {
     type: GET_PRODUCT_DETAIL,
     payload: request

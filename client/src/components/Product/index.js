@@ -5,12 +5,20 @@ import { connect } from 'react-redux';
 import { getProductDetail, clearProductDetail } from '../../store/actions/productsActions';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ProductInfo from './ProductInfo';
+import ProductImages from './ProductImages';
 
 class Product extends Component {
   componentDidMount() {
     //get id from url params
     const id = this.props.match.params.id;
-    this.props.dispatch(getProductDetail(id));
+    this.props.dispatch(getProductDetail(id))
+    //if page doesnt exist
+    .then(resp=>{
+      if(!this.props.products.productDetail){
+        console.log("no article found1")
+        this.props.history.push("/shop")
+      }
+    })
 
   }
 
@@ -25,9 +33,13 @@ class Product extends Component {
         <div className="container">
           {
             this.props.products.productDetail ?
-              ( <div className="product_detail_wrapper">
+              <div className="product_detail_wrapper">
                   <div className="left">
-                      Images
+                    <div style={{width: "400px"}}>
+                      <ProductImages
+                        prodDetail={this.props.products.productDetail}
+                      />
+                    </div>
                   </div>
                   <div className="right">
                     <ProductInfo
@@ -35,10 +47,10 @@ class Product extends Component {
                       prodDetail={this.props.products.productDetail}
                       />
                   </div>
-              </div> )
-            : (<div className="main_loader">
+              </div>
+            : <div className="main_loader">
                 <CircularProgress color="inherit" thickness={7} />
-              </div>)
+              </div>
           }
         </div>
       </div>
