@@ -3,9 +3,11 @@ import PageTop from '../utils/PageTop';
 
 import { connect } from 'react-redux';
 import { getProductDetail, clearProductDetail } from '../../store/actions/productsActions';
+import { addToCart } from '../../store/actions/userActions';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ProductInfo from './ProductInfo';
 import ProductImages from './ProductImages';
+
 
 class Product extends Component {
   componentDidMount() {
@@ -24,6 +26,10 @@ class Product extends Component {
 
   componentWillUnmount() {
     this.props.dispatch(clearProductDetail())
+  }
+
+  addToCartHandler = (id)=>{
+    this.props.dispatch(addToCart(id))
   }
 
   render() {

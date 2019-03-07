@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const cloudinary = require("cloudinary");
 const formidable = require('formidable'); //for managing file uploads
+const mongoose = require("mongoose");
 
 //MWare import
 const auth = require("../middleware/auth");
@@ -134,6 +135,61 @@ router.get("/removeimage", auth, adminAuth, (req, res)=>{
     });
  
   
+})
+
+///////////////////////////
+// USER SHOPPING CART
+///////////////////////////
+/**
+ * add item to user cart
+ * '/api/users/addtocart?productId=90832984980998
+ * POST
+ */
+router.post('/addtocart', auth, (req, res)=>{
+  //find user
+  User.findOne({_id: req.user._id}, (err, foundUser)=>{
+    //check if product being added is a duplicate(i.e. already exists in cart)
+    let duplicate = false;
+    foundUser.cart.forEach(item=>{
+      if(item.id == req.query.productId){ //if item exists in users cart
+        duplicate = true //change duplicate to true
+      }
+    })
+
+    if(duplicate){
+      //product is already in users cart
+      User. findOneAndUpdate(
+        //find user & find which cart obj is to be updated from cart array
+        {_id: req.user._id, "cart.id":mongoose.Types.ObjectId(req.query.productId)},
+        //increment quantity by 1
+        {$inc: {"cart.$.quantity": 1}},
+        {new: true},
+        (error, foundAndUpdatedUser) =>{
+          if(error) return res.status(400).json({success: false, error})
+          res.status(200).json(foundAndUpdatedUser.cart)
+        }
+      )
+
+    }else{
+      //nt a duplicate. A new product to cart
+      User.findOneAndUpdate(
+        {_id: req.user._id},
+        {$push: { cart: //push to users cart below object
+          { 
+            id: mongoose.Types.ObjectId(req.query.productId),
+            quantity: 1,
+            addedDate: Date.now()
+          }
+        }},
+        {new: true}, //return whole doc
+        (error, foundAndUpdatedUser) =>{
+          if(error) return res.status(400).json({success: false, error})
+          res.status(200).json(foundAndUpdatedUser.cart)
+        }
+        )
+    }
+
+  })
 })
 
 module.exports = router;

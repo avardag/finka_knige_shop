@@ -4,7 +4,12 @@ import MyButton from '../utils/buttons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTruck, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons'
 
-const ProductInfo = ({ prodDetail }) => {
+/**
+ * 
+ * @props prodDetail -> object
+ * @props addToCart -> func. addToCart(product.id){  }
+ */
+const ProductInfo = ({ prodDetail, addToCart }) => {
 
   const showProductTags = (details) => (
     <div className="product_tags">
@@ -37,8 +42,7 @@ const ProductInfo = ({ prodDetail }) => {
         <MyButton
           type="add_to_cart_link"
           runAction={() => {
-            // TODO 
-            console.log('add to cart')
+            addToCart(details._id)
           }}
         />
       </div>
