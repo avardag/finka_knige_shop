@@ -3,9 +3,10 @@ import { LOGIN_USER,
          REGISTER_USER,
          AUTH_USER, 
          LOGOUT_USER,
-         ADD_TO_CART_USER
+         ADD_TO_CART_USER,
+         GET_CART_ITEMS_USER
          } from './types';
-import { USER_ROUTES } from '../../components/utils/misc';
+import { USER_ROUTES, PRODUCTS_ROUTES } from '../../components/utils/misc';
 
 
 export function loginUser(userDataToSubmit){
@@ -58,6 +59,33 @@ export function addToCart(_id){
 
   return {
     type: ADD_TO_CART_USER,
+    payload: request
+  }
+}
+/** 
+ * @route /api/products/articles/id?id=kfhhihf39080923jd9082,skffn989489msn&type=array
+ * GET
+ * @param cartItems -> array, of cart items IDS
+ * @param userCart -> array, of objects in cart: { id: 20303, quantity: 3, addedDate: 92839 }
+ * @return array of product objs with quantity key injected from userCart
+ */
+export function getCartItems(cartItems, userCart) {
+  const request = axios.get(`${PRODUCTS_ROUTES}/articles/id?id=${cartItems}&type=array`)
+    .then(response=>{
+      //inject quantity in userCart into product objects returned in response.data
+      //will return array of products objs with quantity key included
+      //because product model from server doensnt have quantity field
+      userCart.forEach(item=>{
+        response.data.forEach((k, i)=>{
+          if(item.id === k._id){
+            response.data[i].quantity = item.quantity;
+          }
+        })
+      })
+      return response.data;
+    })
+  return {
+    type: GET_CART_ITEMS_USER,
     payload: request
   }
 }

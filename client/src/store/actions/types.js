@@ -18,6 +18,7 @@ export const CLEAR_PRODUCT_DETAIL = "CLEAR_PRODUCT_DETAIL"
 
 //Cart types
 export const ADD_TO_CART_USER = "ADD_TO_CART_USER"
+export const GET_CART_ITEMS_USER = "GET_CART_ITEMS_USER"
 
 
 
