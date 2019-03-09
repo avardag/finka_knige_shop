@@ -4,6 +4,7 @@ import UserLayout from '../hocs/UserLayout';
 import { connect } from 'react-redux';
 import { getCartItems } from '../../store/actions/userActions';
 //components import
+import UserProductBlock from '../utils/user/UserProductBlock';
 
 //fontawsome icons import 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -30,21 +31,45 @@ class UserCart extends Component {
         //dispatch action:
         this.props.dispatch(getCartItems(cartItems, user.userData.cart))
         .then(()=>{
-          
+          if(this.props.user.userCartDetail.length > 0){
+              this.calculateTotal(this.props.user.userCartDetail);
+          }
       })
       }
     }
   }
- 
+  calculateTotal = (userCartDetail) => {
+    let total = 0;
 
+    userCartDetail.forEach(item => {
+      total += parseInt(item.price, 10) * item.quantity
+    });
+
+    this.setState({
+      total,
+      showTotal: true
+    });
+  }
+
+  removeFromCart = (id)=>{
+    console.log(id)
+  }
+  
   render() {
     return (
       <div>
         <UserLayout>
-          <div>Shopping cart</div>
-          <div>Shopping cart</div>
-          <div>Shopping cart</div>
-          <div>Shopping cart</div>
+          <div>
+            <h1>My Cart</h1>
+            <div className="user_cart">
+              <UserProductBlock
+                user={this.props.user}
+                type="cart"
+                removeItem={(id)=>this.removeFromCart(id)}
+              />
+            </div>
+          </div>
+          
         </UserLayout>
 
 
