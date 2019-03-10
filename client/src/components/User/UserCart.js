@@ -54,7 +54,12 @@ class UserCart extends Component {
   removeFromCart = (id)=>{
     console.log(id)
   }
-  
+  showNoItemMessage = ()=>(
+    <div className="cart_no_items">
+      <FontAwesomeIcon icon={faFrown}/>
+      <div>You have no items</div>
+    </div>
+  )
   render() {
     return (
       <div>
@@ -67,7 +72,30 @@ class UserCart extends Component {
                 type="cart"
                 removeItem={(id)=>this.removeFromCart(id)}
               />
+              {
+                this.state.showTotal ?
+                  <div>
+                    <div className="user_cart_sum">
+                      <div>Total Amount: $ {this.state.total}</div>
+                    </div>
+                  </div>
+                : 
+                this.state.showSuccess ?
+                  <div className="cart_success">
+                    <FontAwesomeIcon icon={faSmile}/>
+                    <div>THANK YOU</div>
+                    <div>YOUR ORDER IS COMPLETE</div>
+                  </div>
+                 : this.showNoItemMessage()
+              }
             </div>
+            {
+              this.state.showTotal ?
+                <div className="paypal_button_container">
+                  // ??TODO: Paypal
+                </div>
+              : null
+            }
           </div>
           
         </UserLayout>
