@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import UserLayout from '../hocs/UserLayout';
 //redux actions
 import { connect } from 'react-redux';
-import { getCartItems } from '../../store/actions/userActions';
+import { getCartItems, removeCartItem } from '../../store/actions/userActions';
 //components import
 import UserProductBlock from '../utils/user/UserProductBlock';
 
@@ -52,7 +52,14 @@ class UserCart extends Component {
   }
 
   removeFromCart = (id)=>{
-    console.log(id)
+    this.props.dispatch(removeCartItem(id))
+      .then(()=>{
+        if (this.props.user.userCartDetail.length <= 0) { // removed all items from cart
+          this.setState({showTotal: false})
+        } else { //there are some items left, so calculate new total
+          this.calculateTotal(this.props.user.userCartDetail)          
+        }
+      })
   }
   showNoItemMessage = ()=>(
     <div className="cart_no_items">
@@ -92,7 +99,7 @@ class UserCart extends Component {
             {
               this.state.showTotal ?
                 <div className="paypal_button_container">
-                  // ??TODO: Paypal
+                  TODO: Paypal
                 </div>
               : null
             }

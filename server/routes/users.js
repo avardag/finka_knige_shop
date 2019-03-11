@@ -10,6 +10,7 @@ const adminAuth = require("../middleware/adminAuth");
 
 //model imports
 const User = require("../models/user");
+const Product = require("../models/product")
 
 /**
  * authorization route
@@ -192,4 +193,37 @@ router.post('/addtocart', auth, (req, res)=>{
   })
 })
 
+/**
+ * remove item from user cart
+ * '/api/users/removefromcart?productId=90832984980998
+ * GET
+ */
+router.get("/removefromcart", auth, (req, res)=>{
+  //find user to update
+  User.findOneAndUpdate(
+    {_id: req.user._id},
+    {"$pull": //pull, i.e. remove
+      {"cart": //from cart array
+        {"id": mongoose.Types.ObjectId(req.query.productId)}
+      }
+    },
+    {new: true}, //return new state of model
+    (err, foundUser)=>{
+      let cart = foundUser.cart;
+      let productsInCart = cart.map(item=>{
+        return mongoose.Types.ObjectId(item.id)
+      });
+      //find all products with matching ids in productsInCart
+      Product.find({"_id": { $in: productsInCart }})
+            .populate("brand")
+            .populate("style")
+            .exec((err, foundProducts)=>{
+              return res.status(200).json({
+                cartDetail: foundProducts,
+                cart: cart
+              })
+            })
+    }
+  )
+})
 module.exports = router;

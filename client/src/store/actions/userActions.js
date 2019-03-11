@@ -4,7 +4,8 @@ import { LOGIN_USER,
          AUTH_USER, 
          LOGOUT_USER,
          ADD_TO_CART_USER,
-         GET_CART_ITEMS_USER
+         GET_CART_ITEMS_USER,
+         REMOVE_CART_ITEM_USER,
          } from './types';
 import { USER_ROUTES, PRODUCTS_ROUTES } from '../../components/utils/misc';
 
@@ -86,6 +87,35 @@ export function getCartItems(cartItems, userCart) {
     })
   return {
     type: GET_CART_ITEMS_USER,
+    payload: request
+  }
+}
+
+/** 
+ *  remove item item user cart
+ * GET
+ * @route /api/users/removefromcart?productId=90832984980998
+ * @param cartItems -> array, of cart items IDS
+ * @param userCart -> array, of objects in cart: { id: 20303, quantity: 3, addedDate: 92839 }
+ * @return array of product objs with quantity key injected from userCart
+ */
+export function removeCartItem(productId) {
+  const request = axios.get(`${USER_ROUTES}/removefromcart?productId=${productId}`)
+    .then(response=>{
+      //inject quantity in userCart into product objects returned in response.data
+      //will return array of products objs with quantity key included
+      //because product model from server doensnt have quantity field
+      response.data.cart.forEach(item=>{
+        response.data.cartDetail.forEach((k, i)=>{
+          if(item.id === k._id){
+            response.data.cartDetail[i].quantity = item.quantity;
+          }
+        })
+      })
+      return response.data;
+    })
+  return {
+    type: REMOVE_CART_ITEM_USER,
     payload: request
   }
 }
