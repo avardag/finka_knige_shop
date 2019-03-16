@@ -3,7 +3,7 @@ const router = express.Router();
 const cloudinary = require("cloudinary");
 const formidable = require('formidable'); //for managing file uploads
 const mongoose = require("mongoose");
-
+const async = require('async');
 //MWare import
 const auth = require("../middleware/auth");
 const adminAuth = require("../middleware/adminAuth");
@@ -11,6 +11,7 @@ const adminAuth = require("../middleware/adminAuth");
 //model imports
 const User = require("../models/user");
 const Product = require("../models/product")
+const Payment = require("../models/payment")
 
 /**
  * authorization route
@@ -225,5 +226,81 @@ router.get("/removefromcart", auth, (req, res)=>{
             })
     }
   )
+})
+
+/** 
+ * Updates users history of purchases, empties users cart, increments all
+ * products in users cart "sold" value. Stores payment details in Payment model of DB
+ * 
+ * Success buy route
+ * POST
+ * /api/users/successbuy
+ */
+router.post("/successbuy", auth, (req, res)=>{
+  let history = [];
+  let transactionData ={};//got from paypal
+  
+  //update user history. history field in user model is array
+  req.body.userCartDetail.forEach((item)=>{
+    history.push({
+      dateOfPurchase: Date.now(),
+      name: item.name,
+      brand: item.brand,
+      id: item._id,
+      price: item.price,
+      quantity: item.quantity,
+      paymentID: req.body.paymentData.paymentID
+    })
+  })
+
+  //store payment info in Payments Dash. needs new db model
+  transactionData.user = {
+    id: req.user._id,
+    firstName: req.user.firstName,
+    lastName: req.user.lastName,
+    email: req.user.email,
+  }
+  transactionData.data= req.body.paymentData; //info from paypal transaction
+  transactionData.products = history;
+
+  //Find user by id too update
+  User.findOneAndUpdate(
+    { _id: req.user._id },
+    //push to users history array. And erase user's cart, set to empty array
+    { $push: { history: history }, $set: { cart: [] }}, 
+    //return new updated user
+    { new: true},
+    (err, foundAndUpdatedUser)=>{
+      if (err) res.json({success: false, err})
+      //create paymet instance and save to db
+      const payment = new Payment(transactionData);
+      payment.save((err, savedPaymentDoc)=>{
+        if (err) res.json({success: false, err})
+        //create paymentArray to loop
+        let produtsArray = [];
+        savedPaymentDoc.products.forEach((item)=>{
+          produtsArray.push( {id: item.id, quantity: item.quantity} )
+        })
+        //use nodes async lib to loop over async looping, and to return single
+        //=> callback when all async stuff is done
+        async.eachOfSeries(produtsArray, (item, callbackWhenDone)=>{
+          Product.update(
+            {_id: item.id},
+            { $inc: { "sold": item.quantity } },
+            {new: false},
+            callbackWhenDone
+          )
+        }, (err)=>{ // this is callbackWhenDone
+          if (err) res.json({success: false, err})
+          res.status(200).json({
+            success: true,
+            cart: user.cart, //will be empty
+            userCartDetail: []
+          })
+        })
+      })
+    }
+  )
+
 })
 module.exports = router;
