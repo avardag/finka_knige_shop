@@ -5,10 +5,11 @@ import { connect } from 'react-redux';
 import { getCartItems, removeCartItem } from '../../store/actions/userActions';
 //components import
 import UserProductBlock from '../utils/user/UserProductBlock';
-
+import Paypal from '../utils/Paypal';
 //fontawsome icons import 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFrown, faSmile } from '@fortawesome/free-solid-svg-icons'
+
 
 class UserCart extends Component {
   state = {
@@ -67,6 +68,24 @@ class UserCart extends Component {
       <div>You have no items</div>
     </div>
   )
+
+  //paypal actions
+  ////////////////
+  transactionError = (data)=>{
+    console.log("error")
+  }
+
+  transactioncancelled= (data)=>{
+    console.log('cancelled')
+  }
+
+  transactionSuccess = (data)=>{
+    this.setState({
+      showSuccess: true,
+      showTotal: false
+    })
+  }
+
   render() {
     return (
       <div>
@@ -99,7 +118,12 @@ class UserCart extends Component {
             {
               this.state.showTotal ?
                 <div className="paypal_button_container">
-                  TODO: Paypal
+                  <Paypal
+                    toPay={this.state.total}
+                    transactionError={(data)=> this.transactionError(data)}
+                    transactioncancelled={(data)=> this.transactioncancelled(data)}
+                    onSuccess={(data)=> this.transactionSuccess(data)}
+                  />
                 </div>
               : null
             }
