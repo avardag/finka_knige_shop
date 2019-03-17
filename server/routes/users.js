@@ -262,7 +262,7 @@ router.post("/successbuy", auth, (req, res)=>{
   }
   transactionData.data= req.body.paymentData; //info from paypal transaction
   transactionData.products = history;
-
+  
   //Find user by id too update
   User.findOneAndUpdate(
     { _id: req.user._id },
@@ -281,9 +281,10 @@ router.post("/successbuy", auth, (req, res)=>{
         savedPaymentDoc.products.forEach((item)=>{
           produtsArray.push( {id: item.id, quantity: item.quantity} )
         })
+        
         //use nodes async lib to loop over async looping, and to return single
         //=> callback when all async stuff is done
-        async.eachOfSeries(produtsArray, (item, callbackWhenDone)=>{
+        async.eachSeries(produtsArray, (item, callbackWhenDone)=>{
           Product.update(
             {_id: item.id},
             { $inc: { "sold": item.quantity } },
@@ -294,8 +295,8 @@ router.post("/successbuy", auth, (req, res)=>{
           if (err) res.json({success: false, err})
           res.status(200).json({
             success: true,
-            cart: user.cart, //will be empty
-            userCartDetail: []
+            cart: foundAndUpdatedUser.cart, //will be empty
+            cartDetail: []
           })
         })
       })

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import UserLayout from '../hocs/UserLayout';
 //redux actions
 import { connect } from 'react-redux';
-import { getCartItems, removeCartItem } from '../../store/actions/userActions';
+import { getCartItems, removeCartItem, onSuccessBuy } from '../../store/actions/userActions';
 //components import
 import UserProductBlock from '../utils/user/UserProductBlock';
 import Paypal from '../utils/Paypal';
@@ -80,10 +80,19 @@ class UserCart extends Component {
   }
 
   transactionSuccess = (data)=>{
-    this.setState({
-      showSuccess: true,
-      showTotal: false
+    ///dispatch redux action
+    this.props.dispatch(onSuccessBuy({ //pass parameters
+      userCartDetail: this.props.user.userCartDetail,
+      paymentData: data //paypal payment data
+    })).then(()=>{
+      if(this.props.user.successBuy){ //on successful dispatch reducer sets successBuy
+        this.setState({ //change state
+          showSuccess: true,
+          showTotal: false
+        })
+      }
     })
+    
   }
 
   render() {
@@ -116,7 +125,7 @@ class UserCart extends Component {
               }
             </div>
             {
-              this.state.showTotal ?
+              this.state.showTotal && 
                 <div className="paypal_button_container">
                   <Paypal
                     toPay={this.state.total}
@@ -125,7 +134,6 @@ class UserCart extends Component {
                     onSuccess={(data)=> this.transactionSuccess(data)}
                   />
                 </div>
-              : null
             }
           </div>
           

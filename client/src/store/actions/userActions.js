@@ -6,6 +6,7 @@ import { LOGIN_USER,
          ADD_TO_CART_USER,
          GET_CART_ITEMS_USER,
          REMOVE_CART_ITEM_USER,
+         ON_SUCCESS_BUY_USER,
          } from './types';
 import { USER_ROUTES, PRODUCTS_ROUTES } from '../../components/utils/misc';
 
@@ -116,6 +117,24 @@ export function removeCartItem(productId) {
     })
   return {
     type: REMOVE_CART_ITEM_USER,
+    payload: request
+  }
+}
+/** 
+ *  
+ * POST
+ * @route /api/users/successbuy
+ * @param data -> 
+ * @return obj {success: true,
+                cart: user.cart, //will be empty
+                cartDetail: []
+                }
+ */
+export function onSuccessBuy(data) {
+  const request = axios.post(`${USER_ROUTES}/successbuy`, data)
+    .then(response => response.data)
+  return {
+    type: ON_SUCCESS_BUY_USER,
     payload: request
   }
 }
