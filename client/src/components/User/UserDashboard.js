@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import UserLayout from '../hocs/UserLayout';
 import MyButton from '../utils/buttons';
+import UserHistoryBlock from '../utils/user/UserHistoryBlock';
 
 class UserDashboard extends Component {
   render() {
@@ -21,13 +22,18 @@ class UserDashboard extends Component {
               linkTo="/user/user-profile"
             />
           </div>
-          <div className="user_nfo_panel">
-            <h1>History of purchases</h1>
-            <div className="user_product_block_wrapper">
-              TODO: History table
-            </div>
+          {
+            user.history ?
+            <div className="user_nfo_panel">
+              <h1>History of purchases</h1>
+              <div className="user_product_block_wrapper">
+                <UserHistoryBlock products={user.history}/>
+              </div>
 
-          </div>
+            </div>
+            : null
+          }
+          
         </div>
       </UserLayout>
     );
