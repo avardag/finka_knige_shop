@@ -106,3 +106,16 @@ export const resetFields = (formData, formName='products') =>{
   }
   return newFormData;
 }
+
+///fetch existing info of user and populate fields with existing data of user
+export const populateFieldsWithExisting = (formData, userData) =>{
+  
+  for(let key in formData){
+    formData[key].value = userData[key];
+    formData[key].valid = true;
+    formData[key].touched = true;
+    formData[key].validationMessage = '';
+
+  }
+  return formData
+}

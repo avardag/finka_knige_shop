@@ -7,6 +7,8 @@ import { LOGIN_USER,
          GET_CART_ITEMS_USER,
          REMOVE_CART_ITEM_USER,
          ON_SUCCESS_BUY_USER,
+         UPDATE_DATA_USER,
+         CLEAR_UPDATE_DATA_USER,
          } from './types';
 import { USER_ROUTES, PRODUCTS_ROUTES } from '../../components/utils/misc';
 
@@ -136,5 +138,29 @@ export function onSuccessBuy(data) {
   return {
     type: ON_SUCCESS_BUY_USER,
     payload: request
+  }
+}
+
+/**
+ * update user info
+ * POST /api/users/update-profile
+ * @param dataToSubmit -> obj
+ */
+export function updateUserData(dataToSubmit){
+  
+  const request = axios.post(`${USER_ROUTES}/update-profile`, dataToSubmit)
+    .then(response => response.data)
+  return {
+    type: UPDATE_DATA_USER,
+    payload: request
+  }
+}
+/**
+ * clears uddated user from redux state
+ */
+export function clearUpdateUserData(){
+  return {
+    type: CLEAR_UPDATE_DATA_USER,
+    payload: ""
   }
 }

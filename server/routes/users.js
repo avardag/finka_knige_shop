@@ -304,4 +304,25 @@ router.post("/successbuy", auth, (req, res)=>{
   )
 
 })
+
+/**
+ * update user info
+ * POST
+ * /api/users/update-profile
+ */
+router.post("/update-profile", auth, (req, res)=>{
+
+  User.findOneAndUpdate(
+    {_id: req.user._id},
+    { $set: req.body },
+    { new: true },
+    (err, doc)=>{
+      if(err) res.json({success: false, err})
+
+      return res.status(200).send({ success: true })
+    }
+  )
+})
+
+
 module.exports = router;
