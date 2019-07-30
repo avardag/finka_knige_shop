@@ -2,8 +2,9 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCompass, faPhone, faClock, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 
-const Footer = () => {
+const Footer = ({siteData}) => {
   return (
+    siteData.siteInfo ? 
     <footer className="bck_b_dark">
       <div className="container">
         <div className="logo">
@@ -20,7 +21,7 @@ const Footer = () => {
                 />
                 <div className="nfo">
                   <div>Address</div>
-                  <div>Shurina 145</div>
+                  <div>{siteData.siteInfo[0].address}</div>
                 </div>
               </div>
               <div className="tag">
@@ -30,7 +31,7 @@ const Footer = () => {
                 />
                 <div className="nfo">
                   <div>Phone</div>
-                  <div>+7-928-816-2222</div>
+                  <div>{siteData.siteInfo[0].phone}</div>
                 </div>
               </div>
               <div className="tag">
@@ -40,7 +41,7 @@ const Footer = () => {
                 />
                 <div className="nfo">
                   <div>Working hours</div>
-                  <div>Mon-Fri/ 9:00-18:00</div>
+                  <div>{siteData.siteInfo[0].hours}</div>
                 </div>
               </div>
               <div className="tag">
@@ -50,7 +51,7 @@ const Footer = () => {
                 />
                 <div className="nfo">
                   <div>Email</div>
-                  <div>info@finka-knives.com</div>
+                  <div>{siteData.siteInfo[0].siteEmail}</div>
                 </div>
               </div>
             </div>
@@ -66,6 +67,7 @@ const Footer = () => {
         </div>
     </div>
   </footer>
+  : null
   );
 };
 
