@@ -9,7 +9,7 @@ import {
 } from '../../utils/forms/formActions';
 
 // //redux actions
-import { getSiteInfo } from '../../../store/actions/siteActions';
+import { getSiteInfo, updateSiteInfo } from '../../../store/actions/siteActions';
 
 
 
@@ -112,7 +112,13 @@ class UpdateSiteInfo extends Component {
     let formIsValid = isFormValid(this.state.formData, "site_info")
     
     if (formIsValid) {
-      console.log(dataToSubmit)
+      this.props.dispatch(updateSiteInfo(dataToSubmit)).then(()=>{
+        this.setState({formSuccess: true}, ()=>{
+          setTimeout(()=>{
+            this.setState({formSuccess: true});
+          }, 2000)
+        });
+      })
       
     } else {
       this.setState({ formError: true })

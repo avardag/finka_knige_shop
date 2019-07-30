@@ -12,3 +12,14 @@ export function getSiteInfo(){
   }
   
 }
+// update site info
+// POST /api/site/site_info
+export function updateSiteInfo(dataToSubmit){
+  const request = axios.post(`${SITE_INFO_ROUTES}/site_info`, dataToSubmit)
+    .then(response => response.data);
+
+  return {
+    type: UPDATE_SITE_INFO,
+    payload: request
+  }
+}

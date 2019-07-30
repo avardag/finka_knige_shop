@@ -1,6 +1,7 @@
 const mongoose = require("mongoose")
 
 const siteSchema = mongoose.Schema({
+  name: String, //to be used to find doc
   featured:{
     required: true,
     type: Array,
