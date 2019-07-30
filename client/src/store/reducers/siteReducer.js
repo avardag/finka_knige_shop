@@ -1,11 +1,9 @@
-// import {   } from './types';
+import {  GET_SITE_INFO, UPDATE_SITE_INFO } from '../actions/types';
 
 export default function (state={}, action) {
   switch (action.type) {
-    case "SITE_IFNO":
-      
-      break;
-  
+    case GET_SITE_INFO:
+      return { ...state, siteInfo: action.payload}
     default:
       return state;
   }

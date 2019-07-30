@@ -40,6 +40,7 @@ app.use("/api/users", require("./routes/users"))
 app.use("/api/products", require("./routes/styles"));
 app.use("/api/products", require("./routes/brands"));
 app.use("/api/products", require("./routes/products"));
+app.use("/api/site", require("./routes/siteInfo"));
 
 // server
 const port = process.env.PORT || 3002;

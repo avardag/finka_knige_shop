@@ -9,6 +9,7 @@ import {
 } from '../../utils/forms/formActions';
 
 // //redux actions
+import { getSiteInfo } from '../../../store/actions/siteActions';
 
 
 
@@ -22,13 +23,12 @@ class UpdateSiteInfo extends Component {
         value: '',
         config: {
           name: "address",
-          type: "email",
+          type: "text",
           placeholder: 'Enter site Address',
           label: 'Address'
         },
         validation: {
-          required: true,
-          email: true
+          required: true
         },
         valid: false,
         touched: false,
@@ -40,13 +40,12 @@ class UpdateSiteInfo extends Component {
         value: '',
         config: {
           name: "hours",
-          type: "email",
+          type: "text",
           placeholder: 'Enter working hours',
           label: 'Working hours'
         },
         validation: {
-          required: true,
-          email: true
+          required: true
         },
         valid: false,
         touched: false,
@@ -58,13 +57,12 @@ class UpdateSiteInfo extends Component {
         value: '',
         config: {
           name: "phone",
-          type: "email",
+          type: "text",
           placeholder: 'Enter Phone number',
           label: 'Phone number'
         },
         validation: {
-          required: true,
-          email: true
+          required: true
         },
         valid: false,
         touched: false,
@@ -91,6 +89,15 @@ class UpdateSiteInfo extends Component {
       },
     }
   }
+  componentDidMount() {
+    this.props.dispatch(getSiteInfo())
+      .then(()=>{
+        // console.log(this.props.site.siteInfo[0])
+        const newFormData  = populateFieldsWithExisting(this.state.formData, this.props.site.siteInfo[0])
+        this.setState({formData: newFormData})
+      })
+  }
+  
   updateForm = (element) => {
     const newFormdata = update(element, this.state.formData, 'site_info');
     this.setState({
@@ -111,7 +118,6 @@ class UpdateSiteInfo extends Component {
       this.setState({ formError: true })
     }
     
-
   }
   
   render() {
@@ -162,4 +168,4 @@ class UpdateSiteInfo extends Component {
 const mapStateToProps = (state)=>({
   site: state.site
 })
-export default connect()(UpdateSiteInfo);
+export default connect(mapStateToProps)(UpdateSiteInfo);

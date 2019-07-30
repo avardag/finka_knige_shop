@@ -24,6 +24,9 @@ export const ON_SUCCESS_BUY_USER = "ON_SUCCESS_BUY_USER"
 //update user info
 export const UPDATE_DATA_USER = "UPDATE_DATA_USER"
 export const CLEAR_UPDATE_DATA_USER = "CLEAR_UPDATE_DATA_USER"
+//Site Info types
+export const GET_SITE_INFO = "GET_SITE_INFO"
+export const UPDATE_SITE_INFO = "UPDATE_SITE_INFO"
 
 
 
