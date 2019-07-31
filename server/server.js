@@ -25,6 +25,8 @@ mongoose
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 app.use(cookieParser())
+//serve static files built by react
+app.use(express.static('client/build'));
 
 //cloudinary config for managing picture uploads
 cloudinary.config({
@@ -41,6 +43,15 @@ app.use("/api/products", require("./routes/styles"));
 app.use("/api/products", require("./routes/brands"));
 app.use("/api/products", require("./routes/products"));
 app.use("/api/site", require("./routes/siteInfo"));
+
+// Default route for index page(SPA)
+if( process.env.NODE_ENV === 'production' ){
+  const path = require('path');
+  app.get('/*',(req,res)=>{
+    //index.html built by react
+    res.sendfile(path.resolve(__dirname,'../client','build','index.html'))
+  })
+}
 
 // server
 const port = process.env.PORT || 3002;
