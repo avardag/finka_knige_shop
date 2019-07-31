@@ -3,6 +3,7 @@ import {  GET_SITE_INFO, UPDATE_SITE_INFO } from './types';
 import { SITE_INFO_ROUTES } from '../../components/utils/misc';
 
 export function getSiteInfo(){
+  // const request = axios.get(`${SITE_INFO_ROUTES}/site_info`)
   const request = axios.get(`${SITE_INFO_ROUTES}/site_info`)
     .then(response => response.data);
 
