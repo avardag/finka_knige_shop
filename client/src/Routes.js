@@ -15,6 +15,8 @@ import Product from './components/Product/index';
 import UserCart from './components/User/UserCart';
 import UpdateProfile from './components/User/UpdateProfile';
 import ManageSite from './components/User/admin/ManageSite';
+//Not found Route
+import NotFound404 from './components/utils/NotFound404';
 
 const Routes = () => {
   return (
@@ -32,6 +34,7 @@ const Routes = () => {
         <Route path="/user/cart" exact component={Auth(UserCart, true)} />
         <Route path="/user/user-profile" exact component={Auth(UpdateProfile, true)} />
         <Route path="/admin/site-info" exact component={Auth(ManageSite, true)} />
+        <Route component={Auth(NotFound404)} />
       
       </Switch>
     </Layout>
