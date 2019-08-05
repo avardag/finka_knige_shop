@@ -4,6 +4,8 @@ const cloudinary = require("cloudinary");
 const formidable = require('formidable'); //for managing file uploads
 const mongoose = require("mongoose");
 const async = require('async');
+//Util to send emails with nodemailer
+const sendEmail = require("../utils/mail")
 //MWare import
 const auth = require("../middleware/auth");
 const adminAuth = require("../middleware/adminAuth");
@@ -42,6 +44,8 @@ router.post("/register", (req, res)=>{
   newUser.save((err, doc)=>{
     if(err) return res.json({success: false, err})
     //no error, proceed
+    //send welcome email
+    sendEmail(doc.email, doc.name, null, "welcome")
     res.status(200).json({
       success: true
     })
