@@ -4,6 +4,8 @@ const cloudinary = require("cloudinary");
 const formidable = require('formidable'); //for managing file uploads
 const mongoose = require("mongoose");
 const async = require('async');
+const moment = require("moment");
+
 //Util to send emails with nodemailer
 const sendEmail = require("../utils/mail")
 //MWare import
@@ -328,5 +330,69 @@ router.post("/update-profile", auth, (req, res)=>{
   )
 })
 
+/** ==============
+ RESET USER PASSwORD
+ ================*/
+
+/**
+ * send user reset password link
+ * POST
+ * /api/users/reset-user
+ */
+router.post("/reset-user", (req, res)=>{
+
+  User.findOne(
+    {email: req.body.email},
+    (err, user)=>{
+      if(err) res.json({success: false, err})
+      if(user){
+        user.generateResetToken((err, user)=>{  
+          if(err) res.json({success: false, err})
+          //send email to user
+          sendEmail(user.email, user.firstName, null, "reset_pass", user);
+  
+          return res.status(200).send({ success: true })
+        })
+      }else{
+        res.json({success: false})
+      }
+    }
+  )
+})
+
+/**
+ * reset users password found by his reset token
+ * POST
+ * /api/users/reset-password
+ */
+router.post("/reset-password", (req, res)=>{
+
+  let today = moment().startOf("day").valueOf(); // -> 1565647200000
+
+  User.findOne(
+    {
+      resetToken: req.body.resetToken,
+      resetTokenExpire: {
+        $gte: today
+      }
+    },
+    (err, user)=>{
+      if(err) res.json({success: false, err})
+      if(user){
+        user.password = req.body.password;
+        user.resetToken = '';
+        user.resetTokenExpire = '';
+        //save user's new info(password) and delete token
+        user.save((err, doc)=>{
+          if(err) res.json({success: false, err})
+          return res.status(200).json({success: true})
+        })
+
+      }else{
+        res.json({success: false, message: 'Sorry bad token, generate new one'})
+      }
+    }
+  )
+})
 
 module.exports = router;

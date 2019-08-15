@@ -17,6 +17,9 @@ import UpdateProfile from './components/User/UpdateProfile';
 import ManageSite from './components/User/admin/ManageSite';
 //Not found Route
 import NotFound404 from './components/utils/NotFound404';
+//Reset User? Pass
+import ResetUser from './components/ResetUser/ResetUser';
+import ResetPass from './components/ResetUser/ResetPass';
 
 const Routes = () => {
   return (
@@ -34,6 +37,8 @@ const Routes = () => {
         <Route path="/user/cart" exact component={Auth(UserCart, true)} />
         <Route path="/user/user-profile" exact component={Auth(UpdateProfile, true)} />
         <Route path="/admin/site-info" exact component={Auth(ManageSite, true)} />
+        <Route path="/reset-user" exact component={Auth(ResetUser, false)} />
+        <Route path="/reset-password/:resetToken" exact component={Auth(ResetPass, false)} />
         <Route component={Auth(NotFound404)} />
       
       </Switch>

@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 const SALT_I = 10;
 const jwt = require('jsonwebtoken');
 require("dotenv").config();
+const crypto = require("crypto");
+const moment = require("moment");
 
 const userSchema = mongoose.Schema({
   email:{
@@ -40,7 +42,13 @@ const userSchema = mongoose.Schema({
   },
   token: {
     type: String
-  }
+  },
+  resetToken: {
+    type: String
+  },
+  resetTokenExpire: {
+    type: Number
+  },
 })
 
 //Middleware to hash password before save
@@ -82,6 +90,27 @@ userSchema.methods.generateToken = function(cb){
   user.save(function(err, user){
     if(err) return cb(err);
     cb(null, user);//null for err, and retrn user
+  })
+}
+
+//mw method to generate a password reset token
+userSchema.methods.generateResetToken = function(cb){
+  let user= this;
+  
+  crypto.randomBytes(20, function(err, buffer){
+    let token = buffer.toString("hex");
+    //set token expiration date(tomorrows date)
+    let today = moment().startOf("day").valueOf(); // -> 1565647200000
+    let tomorrow = moment(today).endOf("day").valueOf(); // -> 1565733599999
+    //save random token to user models resetToken field
+    user.resetToken = token;
+    //save tomorrows date to user models resetTokenExp field
+    user.resetTokenExpire = tomorrow;
+    //save the model
+    user.save(function(err, user){
+      if(err) return cb(err);
+      cb(null, user);
+    })
   })
 }
 

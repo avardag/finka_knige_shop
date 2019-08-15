@@ -4,7 +4,7 @@ import FormField from "../utils/forms/FormField";
 import { update, generateData, isFormValid } from '../utils/forms/formActions';
 //redux actions
 import {loginUser } from "../../store/actions/userActions"
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 class Login extends Component {
 
   state = {
@@ -99,6 +99,7 @@ class Login extends Component {
             <button onSubmit={(e) => this.submitForm(e)} >
               Log in
             </button>
+            <Link to="/reset-user" style={{float: 'right'}}>Forgot password?</Link>
           </form>
         </div>
       </div>
