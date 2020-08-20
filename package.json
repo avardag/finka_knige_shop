@@ -17,7 +17,7 @@
   "author": "M S",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^3.0.3",
+    "bcrypt": "^5.0.0",
     "body-parser": "^1.18.3",
     "cloudinary": "^1.13.2",
     "concurrently": "^4.1.0",
