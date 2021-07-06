@@ -1,29 +1,25 @@
-import React, { Component } from 'react';
-import Header from '../header_footer/Header/index';
-import Footer from '../header_footer/Footer/index';
+import React, { useEffect } from "react";
+import Header from "../header_footer/Header/index";
+import Footer from "../header_footer/Footer/index";
 
-import { connect } from "react-redux";
-import { getSiteInfo } from '../../store/actions/siteActions';
+import { useSelector, useDispatch } from "react-redux";
+import { getSiteInfo } from "../../store/actions/siteActions";
 
-class Layout extends Component {
-  componentDidMount() {
-    if(Object.keys(this.props.site).length === 0){
-      this.props.dispatch(getSiteInfo())
+export default function Layout({ children }) {
+  const site = useSelector((state) => state.site);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (Object.keys(site).length === 0) {
+      dispatch(getSiteInfo());
     }
-  }
-  
-  render() {
-    return (
-      <div className="page_container">
-        <Header/>
-        {this.props.children}
-        <Footer siteData={this.props.site}/>
-      </div>
-    );
-  }
-}
+  }, []);
 
-const mapStatToProps = (state) =>({
-  site: state.site
-})
-export default connect(mapStatToProps)(Layout);
+  return (
+    <div className="page_container">
+      <Header />
+      {children}
+      <Footer siteData={site} />
+    </div>
+  );
+}
