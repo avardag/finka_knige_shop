@@ -1,13 +1,59 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, withRouter } from "react-router-dom";
+import { Link as RouterLink, withRouter } from "react-router-dom";
 import { logoutUser } from "../../../store/actions/userActions";
 import { navLinks } from "./headerLinks";
+import logo from "../../../finka_logo_light.png";
+
+//MUI imports
+
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  IconButton,
+  Drawer,
+  Link,
+  MenuItem,
+  Badge,
+  Divider,
+} from "@material-ui/core";
+
+//Icons
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShoppingCart, faBars } from "@fortawesome/free-solid-svg-icons";
+//styles
+import useStyles from "./header.styles";
 
 const Header = ({ history }) => {
+  const classes = useStyles();
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
+  const [state, setState] = useState({
+    mobileView: false,
+    drawerOpen: false,
+  });
+  const { mobileView, drawerOpen } = state;
+
+  useEffect(() => {
+    const setResponsiveness = () => {
+      return window.innerWidth < 900
+        ? setState((prevState) => ({ ...prevState, mobileView: true }))
+        : setState((prevState) => ({ ...prevState, mobileView: false }));
+    };
+
+    setResponsiveness();
+
+    window.addEventListener("resize", () => setResponsiveness());
+
+    return () => {
+      window.removeEventListener("resize", () => setResponsiveness());
+    };
+  }, []);
+
+  //Handle Logout
   const logoutHandler = () => {
     dispatch(logoutUser()).then((response) => {
       //response is {type:LOGOUT_USER, payload: {success:true}}
@@ -17,35 +63,44 @@ const Header = ({ history }) => {
       }
     });
   };
+
   //function to render links
   const renderLink = (item, i) => {
-    const currentUser = user.userData;
-    if (item.name === "My cart") {
-      //My Cart links has a span attached to it
+    const cartAmount = user.userData.cart ? user.userData.cart.length : 0;
+
+    if (item.name === "CART") {
       return (
-        <div className="cart_link" key={i}>
-          <span>{currentUser.cart ? currentUser.cart.length : 0}</span>
-          <Link to={item.linkTo}>{item.name}</Link>
-        </div>
+        <RouterLink to={item.linkTo} key={i} className={classes.link}>
+          <Badge badgeContent={cartAmount} classes={{ badge: classes.myBadge }}>
+            <FontAwesomeIcon icon={faShoppingCart} size="lg" />
+          </Badge>
+          <span className={classes.myCartText}>My Cart</span>
+        </RouterLink>
       );
-    } else if (item.name === "Log Out") {
+    } else if (item.name === "LOGOUT") {
       //logout is not a RRouter Link(which need "to" prop)
       return (
-        <div onClick={logoutHandler} className="log_out_link" key={i}>
-          {item.name}
-        </div>
+        <RouterLink
+          className={classes.link}
+          onClick={logoutHandler}
+          key={i}
+          color="inherit"
+          to="#"
+        >
+          {item.text}
+        </RouterLink>
       );
     } else {
       //all other links
       return (
-        <Link to={item.linkTo} key={i}>
-          {item.name}
-        </Link>
+        <RouterLink className={classes.link} to={item.linkTo} key={i}>
+          {item.text}
+        </RouterLink>
       );
     }
   };
-  //Function to generate list of links to be displayed
-  const showLinks = (linkTypeArray) => {
+  //Function to generate list of links to be displayed based on authentication of a user
+  const makeLinksArray = (linkTypeArray) => {
     let list = [];
     //userData will be stored right after our app renders,
     // authCheck HOC will dispatch action,
@@ -60,7 +115,7 @@ const Header = ({ history }) => {
           }
         } else {
           //user is authed
-          if (item.name !== "Log In") {
+          if (item.name !== "LOGIN") {
             //skip LogIn link, and push all to list
             list.push(item);
           }
@@ -72,17 +127,71 @@ const Header = ({ history }) => {
       return renderLink(item, i); //function to render Link elements
     });
   };
+
+  const LogoWrapper = (
+    <RouterLink to="/">
+      <img src={logo} style={{ width: "100px" }} />
+    </RouterLink>
+  );
+
+  const displayDesktop = () => {
+    return (
+      <Toolbar className={classes.toolbar}>
+        {LogoWrapper}
+        <div className={classes.desktopLinks}>
+          <div>{makeLinksArray(navLinks.pageLinks)}</div>
+          <div>{makeLinksArray(navLinks.userLinks)}</div>
+        </div>
+      </Toolbar>
+    );
+  };
+
+  const displayMobile = () => {
+    const handleDrawerOpen = () =>
+      setState((prevState) => ({ ...prevState, drawerOpen: true }));
+    const handleDrawerClose = () =>
+      setState((prevState) => ({ ...prevState, drawerOpen: false }));
+
+    return (
+      <Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
+        <div>{LogoWrapper}</div>
+        <IconButton
+          {...{
+            edge: "start",
+            "aria-label": "menu",
+            "aria-haspopup": "true",
+            onClick: handleDrawerOpen,
+          }}
+        >
+          <FontAwesomeIcon icon={faBars} size="lg" color="#66fcf1" />
+        </IconButton>
+        <Drawer
+          classes={{ paper: classes.paper }}
+          {...{
+            anchor: "right",
+            open: drawerOpen,
+            onClose: handleDrawerClose,
+          }}
+        >
+          <div className={classes.drawerContainer}>
+            <div className={classes.drawerList}>
+              {makeLinksArray(navLinks.pageLinks)}
+            </div>
+            <Divider />
+            <div className={classes.drawerList}>
+              {makeLinksArray(navLinks.userLinks)}
+            </div>
+          </div>
+        </Drawer>
+      </Toolbar>
+    );
+  };
+
   return (
-    <header className="bck_b_light">
-      <div className="container">
-        <div className="left">
-          <div className="logo">Finka</div>
-        </div>
-        <div className="right">
-          <div className="top">{showLinks(navLinks.userLinks)}</div>
-          <div className="bottom">{showLinks(navLinks.pageLinks)}</div>
-        </div>
-      </div>
+    <header>
+      <AppBar className={classes.header}>
+        {mobileView ? displayMobile() : displayDesktop()}
+      </AppBar>
     </header>
   );
 };

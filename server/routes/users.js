@@ -51,7 +51,7 @@ router.post("/register", (req, res) => {
     }
     //no error, proceed
     //send welcome email
-    sendEmail(doc.email, doc.name, null, "welcome");
+    sendEmail(doc.email, doc.name, null, "welcome"); //TODO: fix confirmation email email
     res.status(200).json({
       success: true,
     });

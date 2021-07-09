@@ -1,21 +1,21 @@
-import React from 'react';
-import moment from 'moment';
+import React from "react";
+import { format } from "date-fns";
 
 const UserHistoryBlock = (props) => {
-
   //renders tbody
-  const renderBlocks = () => (
-    props.products ?
-      props.products.map((product,i)=>(
-        <tr key={i}>
-            <td>{moment(product.dateOfPurchase).format("MM-DD-YYYY")}</td>
-            <td>{product.brand.name} {product.name}</td>
+  const renderBlocks = () =>
+    props.products
+      ? props.products.map((product, i) => (
+          <tr key={i}>
+            <td>{format(product.dateOfPurchase).format("MM-DD-YYYY")}</td>
+            <td>
+              {product.brand.name} {product.name}
+            </td>
             <td>$ {product.price}</td>
             <td>{product.quantity}</td>
-        </tr>
-      ))
-    :null
-  )
+          </tr>
+        ))
+      : null;
 
   return (
     <div className="history_blocks">
@@ -28,9 +28,7 @@ const UserHistoryBlock = (props) => {
             <th>Quantity</th>
           </tr>
         </thead>
-        <tbody>
-            {renderBlocks()}
-        </tbody>
+        <tbody>{renderBlocks()}</tbody>
       </table>
     </div>
   );

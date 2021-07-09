@@ -1,34 +1,40 @@
 export const navLinks = {
   pageLinks: [
     {
-      name: "Home",
+      name: "HOME",
+      text: "Home",
       linkTo: "/",
       public: true,
     },
     {
-      name: "Knives",
+      name: "KNIVES",
+      text: "Knives",
       linkTo: "/shop",
       public: true,
     },
   ],
   userLinks: [
     {
-      name: "My cart",
+      name: "CART",
+      text: "My cart",
       linkTo: "/user/cart",
       public: false,
     },
     {
-      name: "My Account",
+      name: "ACCOUNT",
+      text: "My Account",
       linkTo: "/user/dashboard",
       public: false,
     },
     {
-      name: "Log In",
+      name: "LOGIN",
+      text: "Log In",
       linkTo: "/register-login",
       public: true,
     },
     {
-      name: "Log Out",
+      name: "LOGOUT",
+      text: "Log Out",
       linkTo: "/user/logout",
       public: false,
     },

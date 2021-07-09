@@ -1,30 +1,26 @@
-import React from 'react';
-import Card from "./Card"
-const CardBlock = (props) => {
-  const renderCards = ()=>(
-    props.list? 
-      props.list.map((knife, i)=>(
-        <div key={i}>
-          <Card key={i} knife={knife}/>
-        </div>
-      ))
-    : null
-  )
+import React from "react";
+import Card from "./Card";
+
+const CardBlock = ({ list, title }) => {
+  const renderCards = () =>
+    list
+      ? list.map((knife, i) => (
+          <div key={i}>
+            <Card key={i} knife={knife} />
+          </div>
+        ))
+      : null;
   return (
     <div className="card_block">
       <div className="container">
-        {
-          props.title ?
-            <div className="title">
-              {props.title}
-            </div>
-            : null
-        }
-        <div style={{
-          display: 'flex',
-          flexWrap: 'wrap'
-        }}>
-          {renderCards(props.list)}
+        {title ? <div className="title">{title}</div> : null}
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+          }}
+        >
+          {renderCards(list)}
         </div>
       </div>
     </div>
