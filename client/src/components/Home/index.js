@@ -14,10 +14,10 @@ export default function Home() {
   useEffect(() => {
     dispatch(getProductsByArrival());
     dispatch(getProductsBySell());
-  }, []);
+  }, [dispatch]);
 
   return (
-    <div className="page_container">
+    <div>
       <HomeSlider />
       <CardBlock list={products.bySell} title={"Best Selling Knives"} />
       <HomePromotions />

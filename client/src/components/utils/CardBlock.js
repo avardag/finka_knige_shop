@@ -1,27 +1,30 @@
 import React from "react";
+import Grid from "@material-ui/core/Grid";
 import Card from "./Card";
 
 const CardBlock = ({ list, title }) => {
   const renderCards = () =>
     list
       ? list.map((knife, i) => (
-          <div key={i}>
-            <Card key={i} knife={knife} />
-          </div>
+          <Grid
+            key={i}
+            item
+            xs={12}
+            sm={6}
+            md={3}
+            style={{ display: "flex", justifyContent: "center" }}
+          >
+            <Card knife={knife} />
+          </Grid>
         ))
       : null;
   return (
-    <div className="card_block">
-      <div className="container">
+    <div className="container">
+      <div className="card_block">
         {title ? <div className="title">{title}</div> : null}
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-          }}
-        >
+        <Grid container spacing={2}>
           {renderCards(list)}
-        </div>
+        </Grid>
       </div>
     </div>
   );

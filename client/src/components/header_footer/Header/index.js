@@ -10,12 +10,8 @@ import logo from "../../../finka_logo_light.png";
 import {
   AppBar,
   Toolbar,
-  Typography,
-  Button,
   IconButton,
   Drawer,
-  Link,
-  MenuItem,
   Badge,
   Divider,
 } from "@material-ui/core";
@@ -51,7 +47,7 @@ const Header = ({ history }) => {
     return () => {
       window.removeEventListener("resize", () => setResponsiveness());
     };
-  }, []);
+  }, [dispatch]);
 
   //Handle Logout
   const logoutHandler = () => {
