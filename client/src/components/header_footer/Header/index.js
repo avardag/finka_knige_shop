@@ -188,6 +188,7 @@ const Header = ({ history }) => {
       <AppBar className={classes.header}>
         {mobileView ? displayMobile() : displayDesktop()}
       </AppBar>
+      <div className={classes.pageTop}></div>
     </header>
   );
 };

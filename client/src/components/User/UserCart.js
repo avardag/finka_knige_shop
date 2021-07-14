@@ -1,15 +1,18 @@
 import React, { Component } from "react";
-import UserLayout from '../hocs/UserLayout';
+import UserLayout from "../hocs/UserLayout";
 //redux actions
-import { connect } from 'react-redux';
-import { getCartItems, removeCartItem, onSuccessBuy } from '../../store/actions/userActions';
+import { connect } from "react-redux";
+import {
+  getCartItems,
+  removeCartItem,
+  onSuccessBuy,
+} from "../../store/actions/userActions";
 //components import
-import UserProductBlock from '../utils/user/UserProductBlock';
-import Paypal from '../utils/Paypal';
-//fontawsome icons import 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFrown, faSmile } from '@fortawesome/free-solid-svg-icons'
-
+import UserProductBlock from "../utils/user/UserProductBlock";
+import Paypal from "../utils/Paypal";
+//fontawsome icons import
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFrown, faSmile } from "@fortawesome/free-solid-svg-icons";
 
 class UserCart extends Component {
   state = {
@@ -17,7 +20,7 @@ class UserCart extends Component {
     total: 0,
     showTotal: false,
     showSuccess: false,
-  }
+  };
   componentDidMount() {
     let cartItems = []; //array of products IDs
     let { user } = this.props;
@@ -26,74 +29,82 @@ class UserCart extends Component {
       //check if usercart has items in it
       if (user.userData.cart.length > 0) {
         //get ids of cart items
-        user.userData.cart.forEach(item => {
-          cartItems.push(item.id)
+        user.userData.cart.forEach((item) => {
+          cartItems.push(item.id);
         });
         //dispatch action:
-        this.props.dispatch(getCartItems(cartItems, user.userData.cart))
-        .then(()=>{
-          if(this.props.user.userCartDetail.length > 0){
+        this.props
+          .dispatch(getCartItems(cartItems, user.userData.cart))
+          .then(() => {
+            if (this.props.user.userCartDetail.length > 0) {
               this.calculateTotal(this.props.user.userCartDetail);
-          }
-      })
+            }
+          });
       }
     }
   }
   calculateTotal = (userCartDetail) => {
     let total = 0;
 
-    userCartDetail.forEach(item => {
-      total += parseInt(item.price, 10) * item.quantity
+    userCartDetail.forEach((item) => {
+      total += parseInt(item.price, 10) * item.quantity;
     });
 
     this.setState({
       total,
-      showTotal: true
+      showTotal: true,
     });
-  }
+  };
 
-  removeFromCart = (id)=>{
-    this.props.dispatch(removeCartItem(id))
-      .then(()=>{
-        if (this.props.user.userCartDetail.length <= 0) { // removed all items from cart
-          this.setState({showTotal: false})
-        } else { //there are some items left, so calculate new total
-          this.calculateTotal(this.props.user.userCartDetail)          
-        }
-      })
-  }
-  showNoItemMessage = ()=>(
+  removeFromCart = (id) => {
+    this.props.dispatch(removeCartItem(id)).then(() => {
+      if (this.props.user.userCartDetail.length <= 0) {
+        // removed all items from cart
+        this.setState({ showTotal: false });
+      } else {
+        //there are some items left, so calculate new total
+        this.calculateTotal(this.props.user.userCartDetail);
+      }
+    });
+  };
+  showNoItemMessage = () => (
     <div className="cart_no_items">
-      <FontAwesomeIcon icon={faFrown}/>
+      <FontAwesomeIcon icon={faFrown} />
       <div>You have no items</div>
     </div>
-  )
+  );
 
   //paypal actions
   ////////////////
-  transactionError = (data)=>{
-    console.log("error")
-  }
+  transactionError = (data) => {
+    console.log("error");
+  };
 
-  transactioncancelled= (data)=>{
-    console.log('cancelled')
-  }
+  transactioncancelled = (data) => {
+    console.log("cancelled");
+  };
 
-  transactionSuccess = (data)=>{
+  transactionSuccess = (data) => {
     ///dispatch redux action
-    this.props.dispatch(onSuccessBuy({ //pass parameters
-      userCartDetail: this.props.user.userCartDetail,
-      paymentData: data //paypal payment data
-    })).then(()=>{
-      if(this.props.user.successBuy){ //on successful dispatch reducer sets successBuy
-        this.setState({ //change state
-          showSuccess: true,
-          showTotal: false
+    this.props
+      .dispatch(
+        onSuccessBuy({
+          //pass parameters
+          userCartDetail: this.props.user.userCartDetail,
+          paymentData: data, //paypal payment data
         })
-      }
-    })
-    
-  }
+      )
+      .then(() => {
+        if (this.props.user.successBuy) {
+          //on successful dispatch reducer sets successBuy
+          this.setState({
+            //change state
+            showSuccess: true,
+            showTotal: false,
+          });
+        }
+      });
+  };
 
   render() {
     return (
@@ -105,47 +116,44 @@ class UserCart extends Component {
               <UserProductBlock
                 user={this.props.user}
                 type="cart"
-                removeItem={(id)=>this.removeFromCart(id)}
+                removeItem={(id) => this.removeFromCart(id)}
               />
-              {
-                this.state.showTotal ?
-                  <div>
-                    <div className="user_cart_sum">
-                      <div>Total Amount: $ {this.state.total}</div>
-                    </div>
+              {this.state.showTotal ? (
+                <div>
+                  <div className="user_cart_sum">
+                    <div>Total Amount: € {this.state.total}</div>
                   </div>
-                : 
-                this.state.showSuccess ?
-                  <div className="cart_success">
-                    <FontAwesomeIcon icon={faSmile}/>
-                    <div>THANK YOU</div>
-                    <div>YOUR ORDER IS COMPLETE</div>
-                  </div>
-                 : this.showNoItemMessage()
-              }
-            </div>
-            {
-              this.state.showTotal && 
-                <div className="paypal_button_container">
-                  <Paypal
-                    toPay={this.state.total}
-                    transactionError={(data)=> this.transactionError(data)}
-                    transactioncancelled={(data)=> this.transactioncancelled(data)}
-                    onSuccess={(data)=> this.transactionSuccess(data)}
-                  />
                 </div>
-            }
+              ) : this.state.showSuccess ? (
+                <div className="cart_success">
+                  <FontAwesomeIcon icon={faSmile} />
+                  <div>THANK YOU</div>
+                  <div>YOUR ORDER IS COMPLETE</div>
+                </div>
+              ) : (
+                this.showNoItemMessage()
+              )}
+            </div>
+            {this.state.showTotal && (
+              <div className="paypal_button_container">
+                <Paypal
+                  toPay={this.state.total}
+                  transactionError={(data) => this.transactionError(data)}
+                  transactioncancelled={(data) =>
+                    this.transactioncancelled(data)
+                  }
+                  onSuccess={(data) => this.transactionSuccess(data)}
+                />
+              </div>
+            )}
           </div>
-          
         </UserLayout>
-
-
       </div>
-    )
+    );
   }
 }
 
 const mapStateToProps = (state) => ({
-  user: state.user
-})
-export default connect(mapStateToProps)(UserCart)
+  user: state.user,
+});
+export default connect(mapStateToProps)(UserCart);

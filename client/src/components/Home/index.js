@@ -11,10 +11,11 @@ import CardBlock from "../utils/CardBlock";
 export default function Home() {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products);
+
   useEffect(() => {
     dispatch(getProductsByArrival());
     dispatch(getProductsBySell());
-  }, [dispatch]);
+  }, []);
 
   return (
     <div>

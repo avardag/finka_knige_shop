@@ -121,7 +121,7 @@ export default function Card({ knife, grid }) {
               component="h2"
               className={classes.price}
             >
-              ${knife.price}
+              €{knife.price}
             </Typography>
           </div>
 

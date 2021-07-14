@@ -18,12 +18,13 @@ const CardBlock = ({ list, title }) => {
           </Grid>
         ))
       : null;
+
   return (
     <div className="container">
       <div className="card_block">
         {title ? <div className="title">{title}</div> : null}
         <Grid container spacing={2}>
-          {renderCards(list)}
+          {list && renderCards(list)}
         </Grid>
       </div>
     </div>

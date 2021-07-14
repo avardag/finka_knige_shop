@@ -305,20 +305,6 @@ footer .business_nfo .nfo {
         FEATURED IMAGE
 ==============================*/
 
-/*  ADDED INLINE STYLES
-
-.featured_container .featured_image {
-    position:relative;
-    background-size: cover !important;
-    background-position: center left !important;
-}
-
-.featured_container .featured_action {
-    position: absolute;
-    top: 45%;
-    left: 8%;
-} */
-
 .tag {
   background: #474343;
   color: #ffffff;
@@ -568,6 +554,8 @@ footer .business_nfo .nfo {
 
 .paypal_button_container {
   margin: 10px 0px;
+  background-color: #e3ebee;
+  padding: 1rem;
 }
 
 /*=============================

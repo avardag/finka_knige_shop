@@ -9,6 +9,15 @@ export default makeStyles((theme) => ({
     },
     border: "none",
   },
+  pageTop: {
+    height: "80px",
+    "@media (max-width: 900px)": {
+      height: "65px",
+    },
+    "@media (max-width: 600px)": {
+      height: "60px",
+    },
+  },
   toolbar: {
     minHeight: "80px",
     width: "1100px",
