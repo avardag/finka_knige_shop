@@ -2,5 +2,5 @@
 /build
 /client/node_modules
 /client/public/images
-
+/client/p.txt
 .env
