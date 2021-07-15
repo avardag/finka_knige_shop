@@ -1,46 +1,33 @@
-import React from 'react';
-import MyButton from '../utils/buttons';
+import React from "react";
+import { useSelector } from "react-redux";
+import MyButton from "../utils/buttons";
 
+export default function HomePromotions() {
+  const site = useSelector((state) => state.site);
+  const promotion = site.featured_products ? site.featured_products[1] : null;
 
-const HomePromotions = () => {
-  const promotion =
-  //TODO: images will be served from server
-  {
-    img: "/images/gerber_1.jpg",
-    lineOne: "40% OFF",
-    lineTwo: "In Gerber knives",
-    linkTitle: 'View Offers',
-    linkTo: '/shop'
-  }
-
-  const renderPromotion = () => (
-    promotion ?
-      <div className="home_promotion_img"
+  //TODO: craete a route and state in store for Home promotions
+  const renderPromotion = () =>
+    site.featured_products ? (
+      <div
+        className="home_promotion_img"
         style={{
-          background: `url(${promotion.img})`
+          background: `url(${promotion.image_url})`,
         }}
       >
-        <div className="tag title">{promotion.lineOne}</div>
-        <div className="tag low_title">{promotion.lineTwo}</div>
+        <div className="tag low_title">{promotion.promotion_text}</div>
         <div>
           <MyButton
             type="default"
-            text={promotion.linkTitle}
-            linkTo={promotion.linkTo}
+            text={promotion.button_text}
+            linkTo={promotion.link}
             addStyles={{
-              margin: '10px 0 0 0'
+              margin: "10px 0 0 0",
             }}
           />
         </div>
       </div>
-      : null
-  )
+    ) : null;
 
-  return (
-    <div className="home_promotion">
-      {renderPromotion()}
-    </div>
-  );
-};
-
-export default HomePromotions;
+  return <div className="home_promotion">{renderPromotion()}</div>;
+}
