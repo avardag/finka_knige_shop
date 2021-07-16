@@ -90,10 +90,10 @@ class Login extends Component {
             {this.state.formError ? (
               <div className="error_label">Please check your input data</div>
             ) : null}
-            <button onSubmit={(e) => this.submitForm(e)}>Log in</button>
-            <Link to="/reset-user" style={{ float: "right" }}>
-              Forgot password?
-            </Link>
+            <div className="login__bottomLinks">
+              <Link to="/reset-user">Forgot password?</Link>
+              <button onSubmit={(e) => this.submitForm(e)}>Log in</button>
+            </div>
           </form>
         </div>
       </div>

@@ -42,7 +42,7 @@ export default function ProductImages({ prodDetail }) {
           key={i}
           onClick={() => handleLightboxClick(i)}
           className="thumb"
-          style={{ background: `url(${item}) no-repeat` }}
+          style={{ backgroundImage: `url(${item})` }}
         ></div>
       ) : null
     );
@@ -50,10 +50,11 @@ export default function ProductImages({ prodDetail }) {
   //RENDER
   return (
     <div className="product_image_container">
-      <div className="main_pic">
+      <div className="product-images">
         <div
+          className="main_pic"
           style={{
-            background: `url(${renderCardImage(prodDetail.images)}) no-repeat`,
+            backgroundImage: `url(${renderCardImage(prodDetail.images)})`,
           }}
           onClick={() => handleLightboxClick(0)}
         ></div>

@@ -36,17 +36,13 @@ class Product extends Component {
 
   render() {
     return (
-      <div style={{ marginTop: "80px" }}>
+      <div>
         <PageTop title="Product Detail" />
         <div className="container">
           {this.props.products.productDetail ? (
             <div className="product_detail_wrapper">
               <div className="left">
-                <div style={{ width: "400px" }}>
-                  <ProductImages
-                    prodDetail={this.props.products.productDetail}
-                  />
-                </div>
+                <ProductImages prodDetail={this.props.products.productDetail} />
               </div>
               <div className="right">
                 <ProductInfo
