@@ -64,6 +64,7 @@ export default function ProductImages({ prodDetail }) {
         toggler={toggler}
         sources={lightboxImages}
         sourceIndex={imageIndex}
+        type="image"
       />
     </div>
   );
