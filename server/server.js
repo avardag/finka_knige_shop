@@ -55,6 +55,7 @@ app.use("/api/site", require("./routes/siteInfo"));
 //   });
 // }
 if (process.env.NODE_ENV === "production") {
+  console.log("production statuc");
   app.use(express.static(path.join(__dirname, "../client/build")));
   app.use((req, res) => {
     res.sendFile(path.join(__dirname, "../client/build/index.html"));

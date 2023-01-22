@@ -11,7 +11,7 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client",
     "postinstall2": "cd client && npm install --production=false && npm run build",
-    "postbuild2": "cd client && npm install --production=false && npm run build"
+    "postbuild": "cd client && npm install --production=false && npm run build"
   },
   "engines": {
     "node": "16.x"
