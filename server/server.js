@@ -14,14 +14,28 @@ const app = express();
 // mongoDB setup
 mongoose.Promise = global.Promise;
 const dbURI = process.env.MONGO_URI;
-mongoose
-  .connect(dbURI, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("Mongo DB connected"))
-  .catch((err) => console.log(err));
+// mongoose
+//   .connect(dbURI, {
+//     useNewUrlParser: true,
+//     useCreateIndex: true,
+//     useUnifiedTopology: true,
+//   })
+//   .then(() => console.log("Mongo DB connected"))
+//   .catch((err) => console.log(err));
+
+const connectDB = async () => {
+  try {
+    const conn = await mongoose.connect(dbURI, {
+      useNewUrlParser: true,
+      useCreateIndex: true,
+      useUnifiedTopology: true,
+    });
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
+};
 
 // //formidable for handling file uploads
 // app.use(formidableMiddleware());
@@ -62,5 +76,9 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 // server
-const port = process.env.PORT || 5000;
-app.listen(port, () => console.log(`Server running on port ${port}`));
+const PORT = process.env.PORT || 5000;
+
+//Connect to the database before listening
+connectDB().then(() => {
+  app.listen(PORT, () => console.log(`Server running on port ${port}`));
+});
